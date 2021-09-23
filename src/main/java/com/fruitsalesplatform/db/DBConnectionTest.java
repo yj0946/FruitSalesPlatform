@@ -1,9 +1,9 @@
 package com.fruitsalesplatform.db;
 
+import com.fruitsalesplatform.entity.User;
+import com.fruitsalesplatform.dao.impl.UserDaoImpl;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -26,5 +26,16 @@ public class DBConnectionTest{
         } else {
             System.out.println("MyBatis-数据库连接失败!");
         }
+    }
+
+    @Test
+    public void testDbUserInsert(){
+        User user = new User();
+        user.setUserName("jack");
+        user.setPassword("1234");
+        user.setName("张三");
+        user.setTelephone("15558/5111554");
+        UserDaoImpl userDaoImpl = new UserDaoImpl();
+        System.out.println(userDaoImpl.insertUser(user));
     }
 }

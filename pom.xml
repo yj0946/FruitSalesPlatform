@@ -22,7 +22,7 @@
     <!--MyBatis版本号-->
     <mybatis.version>3.5.1</mybatis.version>
     <!--MySQL驱动版本号-->
-    <mysql-driver.version>5.1.29</mysql-driver.version>
+    <mysql-driver.version>8.0.16</mysql-driver.version>
     <!--log4j日志版本号-->
     <slf4j.version>1.7.18</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
@@ -153,9 +153,9 @@
 
     <!--为数据库提供连接池对象的依赖-->
     <dependency>
-      <groupId>c3p0</groupId>
+      <groupId>com.mchange</groupId>
       <artifactId>c3p0</artifactId>
-      <version>0.9.1.2</version>
+      <version>0.9.5.4</version>
     </dependency>
 
     <!--阿里的JSON封装及解析工具包-->
@@ -296,7 +296,7 @@
     </plugins>
     <resources>
       <resource>
-        <directory>src/main/java</directory>
+        <directory>src/main/java/com/fruitsalesplatform</directory>
         <includes>
           <include>**/*.xml</include>
         </includes>

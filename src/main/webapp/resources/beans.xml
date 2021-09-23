@@ -8,7 +8,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/mvc
-       http://www.springframework.org/schema/spring-mvc-3.0xsd
+       http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-3.0.xsd
        http://www.springframework.org/schema/aop
@@ -20,7 +20,12 @@
        <context:property-placeholder location="classpath:db.properties" />
     
        <!--2.包扫描:dao, service-->
-       <context:component-scan base-package="com.fruitsalesplatform.dao, com.fruitsalesplatform.service"/>
+       <context:component-scan base-package="com.fruitsalesplatform.dao"/>
+       <context:component-scan base-package="com.fruitsalesplatform.db"/>
+       <context:component-scan base-package="com.fruitsalesplatform.service"/>
+       <context:component-scan base-package="com.fruitsalesplatform.service.impl"/>
+       <context:component-scan base-package="com.fruitsalesplatform.dao.impl"/>
+       <context:component-scan base-package="com.fruitsalesplatform.controller"/>
 
        <!--3.datasource数据源-->
        <bean id="datasource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
@@ -43,7 +48,7 @@
        <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
               <property name="dataSource" ref="datasource"/>
               <!--整合MyBatis, 包扫描Mapper文件-->
-              <property name="configLocation" value="SqlMapConfig.xml"/>
+              <property name="configLocation" value="classpath:SqlMapConfig.xml"/>
               <property name="mapperLocations" value="classpath:com/fruitsalesplatform/mapper/*.xml"/>
        </bean>
 

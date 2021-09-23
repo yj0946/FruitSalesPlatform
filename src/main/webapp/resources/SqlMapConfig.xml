@@ -4,6 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <typeAliases>
-        <package name="com.fruitsalesplatform"/>
+        <package name="com.fruitsalesplatform.entity"/>
     </typeAliases>
+
+    <mappers>
+        <mapper resource="mapper/UserDao.xml"/>
+    </mappers>
 </configuration>

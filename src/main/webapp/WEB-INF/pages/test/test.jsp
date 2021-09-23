@@ -10,7 +10,8 @@
 <head>
     <title>test</title>
 </head>
-<br>
-     Test Jsp View<br/>
+      <form action="insert.action" method="post">
+            <input type="button" value="插入">
+      </form>
 </body>
 </html>
