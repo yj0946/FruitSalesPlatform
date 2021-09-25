@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Administrator
@@ -10,8 +11,27 @@
 <head>
     <title>test</title>
 </head>
-      <form action="insert.action" method="post">
-            <input type="button" value="插入">
+      <!--注意Name名字要与实体类javabean中的方法名字一致，否则不能映射-->
+      <form action="findUser.action" method="post">
+            用户姓名:<input type="text" name="Name"/><br/>
+            <input type="submit" value="查询">
       </form>
+      <table width="300px;" border=1>
+          <tr>
+              <td>序号</td>
+              <td>姓名</td>
+              <td>账号</td>
+              <td>电话</td>
+          </tr>
+          <c:forEach items="${userList}" var="fruit" varStatus="status">
+              <tr>
+                  <td>${status.index+1}</td>
+                  <td>${fruit.mUserName}</td>
+                  <td>${fruit.mPassword}</td>
+                  <td>${fruit.mName}</td>
+                  <td>${fruit.mTelephone}</td>
+              </tr>
+          </c:forEach>
+      </table>
 </body>
 </html>

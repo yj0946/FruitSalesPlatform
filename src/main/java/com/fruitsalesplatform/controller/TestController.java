@@ -9,10 +9,25 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.HashMap;
+import java.util.List;
+
 @Controller
 public class TestController {
     @Autowired
     private TestService testService;
+
+    @RequestMapping("/user/findUser.action")
+    private String findUser(User user, Model model) {
+        if (user == null || user.getName() == null) {
+            return "test/test.jsp";
+        }
+        HashMap<String, String> shMap = new HashMap<>();
+        shMap.put("username", user.getName());
+        List<User> lstUser = testService.findUserByName(shMap);
+        model.addAttribute("userList", lstUser);
+        return "test/test.jsp";
+    }
 
     @RequestMapping(value = "/user/insert.action", method = {RequestMethod.GET})
     private String insertUser(Model model){

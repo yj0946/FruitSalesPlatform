@@ -8,6 +8,9 @@ import org.junit.After;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Map;
+
 @Repository    //为了包扫描的时候这个Dao被扫描到
 public class UserDaoImpl implements UserDao {
     @Autowired      //注入SqlSessionFactory
@@ -25,6 +28,14 @@ public class UserDaoImpl implements UserDao {
            return mUserDao.insertUser(user);
         }
         return 0;
+    }
+
+    public List<User> findUserByName(Map<String, String> mapUserName) {
+        UserDao mUserDao = getSqlSession().getMapper(UserDao.class);
+        if (mUserDao == null) {
+            return null;
+        }
+        return mUserDao.findUserByName(mapUserName);
     }
 
     @After

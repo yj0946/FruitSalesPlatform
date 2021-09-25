@@ -10,4 +10,21 @@
          insert into user(username,password,name, telphone)
                values(#{mUserName}, #{mPassword}, #{mName}, #{mTelephone})
       </insert>
+
+      <resultMap id="UserResultMap" type="user">
+          <id column="userid" property="mUserid" />
+          <result column="username" property="mUserName" />
+          <result column="password" property="mPassword" />
+          <result column="name" property="mName" />
+          <result column="telphone" property="mTelephone" />
+      </resultMap>
+
+      <select id="findUserByName" parameterType="hashmap" resultMap="UserResultMap">
+          <bind name="name" value="'%' + username + '%'"/>
+          select userid as mUserid,
+                 username as mUserName,
+                 password as mPassword,
+                 name as mName,
+                 telphone as mTelephone from user where name like #{name}
+      </select>
 </mapper>
