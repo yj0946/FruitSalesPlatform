@@ -23,13 +23,14 @@
               <td>账号</td>
               <td>电话</td>
           </tr>
+          <!--jsp的属性名和方法名一致，但是首字母要小写-->
           <c:forEach items="${userList}" var="fruit" varStatus="status">
               <tr>
                   <td>${status.index+1}</td>
-                  <td>${fruit.mUserName}</td>
-                  <td>${fruit.mPassword}</td>
-                  <td>${fruit.mName}</td>
-                  <td>${fruit.mTelephone}</td>
+                  <td>${fruit.userName}</td>
+                  <td>${fruit.password}</td>
+                  <td>${fruit.name}</td>
+                  <td>${fruit.telephone}</td>
               </tr>
           </c:forEach>
       </table>

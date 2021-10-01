@@ -21,10 +21,10 @@
 
       <select id="findUserByName" parameterType="hashmap" resultMap="UserResultMap">
           <bind name="name" value="'%' + username + '%'"/>
-          select userid as mUserid,
-                 username as mUserName,
-                 password as mPassword,
-                 name as mName,
-                 telphone as mTelephone from user where name like #{name}
+          select userid,
+                 username,
+                 password,
+                 name,
+                 telphone from user where name like #{name}
       </select>
 </mapper>

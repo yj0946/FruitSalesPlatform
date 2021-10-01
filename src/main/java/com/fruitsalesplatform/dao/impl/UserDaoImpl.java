@@ -41,5 +41,6 @@ public class UserDaoImpl implements UserDao {
     @After
     public void destroy()throws Exception{
         mSqlSession.close();
+        mSqlSession = null;
     }
 }
