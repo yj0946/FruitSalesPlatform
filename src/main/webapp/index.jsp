@@ -1,5 +1,10 @@
+<%@page language="java" import="java.util.*" pageEncoding="utf-8" %>
+
 <html>
+    <head><title>index</title></head>
 <body>
-<h2>Hello World!</h2>
+    <script language="JavaScript">
+        wimdow.location.href="user/toLogin.action";
+    </script>
 </body>
 </html>
