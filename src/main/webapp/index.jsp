@@ -4,7 +4,7 @@
     <head><title>index</title></head>
 <body>
     <script language="JavaScript">
-        wimdow.location.href="user/toLogin.action";
+        window.location.href="user/toLogin.action";
     </script>
 </body>
 </html>

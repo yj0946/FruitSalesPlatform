@@ -4,11 +4,13 @@ import com.fruitsalesplatform.dao.BaseDao;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public abstract class BaseDaoImpl<T> extends SqlSessionDaoSupport implements BaseDao<T> {
        @Autowired
        //mybatis-spring 1.0无须此方法; mybatis-spring 1.2必须注入

@@ -17,6 +17,9 @@
        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd ">
        <!--1.扫描controller包-->
        <context:component-scan base-package="com.fruitsalesplatform.controller"/>
+       <context:component-scan base-package="com.fruitsalesplatform.service"/>
+       <context:component-scan base-package="com.fruitsalesplatform.dao"/>
+       <context:component-scan base-package="com.fruitsalesplatform.entity"/>
 
        <!--2.内部资源视图解析器, suffix为空, 方便跟参数 url?id=xxx-->
        <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
