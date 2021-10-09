@@ -51,7 +51,7 @@ public abstract class BaseDaoImpl<T> extends SqlSessionDaoSupport implements Bas
 
         @Override
         public void deleteRecord(Serializable id) {
-            this.getSqlSession().delete(strNs + ".delete", id);
+            this.getSqlSession().delete(strNs + ".deleteById", id);
         }
 
         @Override

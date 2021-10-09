@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="userMapper">
+<mapper namespace="com.fruitsalesplatform.mapper.UserMapper">
     <resultMap id="UserResultMap" type="user">
         <id column="userid" property="mUserid" />
         <result column="username" property="mUserName" />
@@ -11,11 +11,11 @@
         <result column="telphone" property="mTelephone" />
     </resultMap>
 
-    <select id="getOneRecord" parameterType="java.lang.String" resultMap="UserResultMap">
+    <select id="get" parameterType="java.lang.String" resultMap="UserResultMap">
         select * from user where userid=#{userid}
     </select>
 
-    <select id="getMoreRecord" parameterType="map" resultMap="UserResultMap">
+    <select id="find" parameterType="map" resultMap="UserResultMap">
         select * from user
         where 1=1
         <if test="username != null">
@@ -26,8 +26,8 @@
             and password=#{password}
         </if>
 
-        <if test="username != null">
-            <bind name="name" value="'%' + username + '%'"/>
+        <if test="name != null">
+            <bind name="name" value="'%' + name + '%'"/>
             and name like #{name}
         </if>
 
@@ -37,7 +37,7 @@
     </select>
 
     <!--插入语句-->
-    <insert id="insertRecord" parameterType="user">
+    <insert id="insert" parameterType="user">
         <selectKey keyProperty="mUserid" order="AFTER" resultType="int">
             SELECT LAST_INSERT_ID()
         </selectKey>
@@ -46,7 +46,7 @@
     </insert>
 
     <!--更新语句-->
-    <update id="updateRecord" parameterType="user">
+    <update id="update" parameterType="user">
         update user
         <set>
             <if test="mPassword != null">
@@ -65,12 +65,12 @@
     </update>
 
     <!--删除一条-->
-    <delete id="deleteRecord" parameterType="string">
+    <delete id="delete" parameterType="string">
         delete from user where userid = #{userid}
     </delete>
 
     <!--删除多条(一维字符串数组的形式)-->
-    <delete id="deleteRecord" parameterType="string">
+    <delete id="deleteById" parameterType="string">
         delete from user
         where userid in
         <foreach collection="array" item="userId" open="(" close=")" separator=",">

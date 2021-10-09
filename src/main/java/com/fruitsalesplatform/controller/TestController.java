@@ -19,11 +19,11 @@ public class TestController {
 
     @RequestMapping("/user/findUser.action")
     private String findUser(User user, Model model) {
-        if (user == null || user.getName() == null) {
+        if (user == null || user.getAclName() == null) {
             return "test/test.jsp";
         }
         HashMap<String, String> shMap = new HashMap<>();
-        shMap.put("username", user.getName());
+        shMap.put("username", user.getAclName());
         List<User> lstUser = testService.findUserByName(shMap);
         model.addAttribute("userList", lstUser);
         return "test/test.jsp";
@@ -34,7 +34,7 @@ public class TestController {
         User user = new User();
         user.setUserName("jack");
         user.setPassword("1234");
-        user.setName("张三");
+        user.setAclName("张三");
         user.setTelephone("155585111554");
         int i = testService.insertUser(user);
         System.out.println("插入数据成功:" + user.getUserid());

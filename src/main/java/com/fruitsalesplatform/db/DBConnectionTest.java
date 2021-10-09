@@ -33,7 +33,7 @@ public class DBConnectionTest{
         User user = new User();
         user.setUserName("jack");
         user.setPassword("1234");
-        user.setName("张三");
+        user.setAclName("张三");
         user.setTelephone("15558/5111554");
         UserDaoImpl userDaoImpl = new UserDaoImpl();
         System.out.println(userDaoImpl.insertUser(user));

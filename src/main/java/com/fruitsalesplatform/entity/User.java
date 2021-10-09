@@ -31,11 +31,11 @@ public class User {
         this.mPassword = mPassword;
     }
 
-    public String getName() {
+    public String getAclName() {
         return mName;
     }
 
-    public void setName(String mName) {
+    public void setAclName(String mName) {
         this.mName = mName;
     }
 
