@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fruitsalesplatform.mapper.RetailerMapper">
+    <!--resultMap映射-->
+    <resultMap id="retailerRM" type="retailer">
+        <result property="mRetailerId" column="retailerId" />
+        <result property="mName" column="name" />
+        <result property="mTelephone" column="telephone" />
+        <result property="mAddress" column="address" />
+        <result property="mStatus" column="status" />
+        <result property="mCreateTime" column="createTime" />
+    </resultMap>
+
+    <!--查询一个数据量-->
+    <!--SQL片段-->
+    <sql id="query_retailer_where">
+        <if test="mName != null">
+            <bind name="name" value="'%' + mName + '%'"/>
+            and name like #{name}
+        </if>
+
+        <if test="mAddress != null">
+            <bind name="address" value="'%' + mAddress + '%'"/>
+            and address like #{address}
+        </if>
+
+        <if test="mStatus != null">
+            <bind name="status" value="'%' + mStatus + '%'"/>
+            and status like #{status}
+        </if>
+
+        <if test="mTelephone != null">
+            and telephone = #{mTelephone}
+        </if>
+
+        <if test="mCreateTime != null">
+            and createTime = DATE_FORMAT(#{createTime}, '%Y-%m-%d %H:%i:%s')
+        </if>
+
+        <if test="startTime != null">
+            <![CDATA[and createTime >= DATE_FORMAT(#{createTime}, '%Y-%m-%d %H:%i:%s')]]>
+        </if>
+
+        <if test="endTime != null">
+
+        </if>
+    </sql>
+
+    <!--查询-->
+    <select id="find" parameterType="java.util.HashMap" resultMap="retailerRM">
+        select retailerId, name, telephone, address, status, createTime  from retailer
+        where 1=1
+        <include refid="query_retailer_where"></include>
+        <if test="mStartPage != null and mPageSize != null">
+            LIMIT #{mStartPage},{mPageSize}
+        </if>
+    </select>
+
+    <!--统计数量-->
+    <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        select COUNT(*) from retailer
+        <include refid="query_retailer_where"></include>
+    </select>
+
+    <insert id="insert" parameterType="retailer">
+        <selectKey keyProperty="mRetailerId" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into retailer(name, telephone, address, status, createTime)
+        values(#{mName}, #{mTelephone}, #{mAddress}, #{mStatus}, #{mCreateTime})
+    </insert>
+
+    <update id="update" parameterType="retailer">
+        update retailer
+        <set>
+            <if test="mName != null">name=#{mName}</if>
+            <if test="mTelephone != null">telephone=#{mTelephone}</if>
+            <if test="mAddress != null">address=#{mAddress}</if>
+            <if test="mStatus != null">status=#{mStatus}</if>
+        </set>
+        where retailerId=#{mRetailerId}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from retailer where retailer = #{mRetailerId}
+    </delete>
+
+    <delete id="delete" parameterType="java.lang.String">
+        delete from retailer
+        where retailerId in
+        <foreach collection="array" item="retailerId" open="(" close=")" separator=",">
+            #{mRetailerId}
+        </foreach>
+    </delete>
+</mapper>

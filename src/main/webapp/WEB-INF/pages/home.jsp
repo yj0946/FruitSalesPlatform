@@ -10,11 +10,9 @@
 <html>
 <head>
     <title>主页</title>
+    <style>*{margin:0; padding: 0}#menuContent a{text-decoration: none; color: #ffffff}</style>
 </head>
 <body>
-    <c:if test="${user != null}">
-        欢迎您, ${user.aclName} + ${user.userName} + ${user.password}
-    </c:if>
-
+    <%@ include file="menu.jsp"%>
 </body>
 </html>
