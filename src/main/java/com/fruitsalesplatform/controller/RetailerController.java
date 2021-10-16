@@ -2,6 +2,7 @@ package com.fruitsalesplatform.controller;
 
 import com.fruitsalesplatform.entity.Retailer;
 import com.fruitsalesplatform.service.RetailerService;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -10,7 +11,7 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Controller
 public class RetailerController extends BaseController{
     @Resource
     RetailerService retailerService;
