@@ -1,11 +1,15 @@
 package com.fruitsalesplatform.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.fruitsalesplatform.entity.Retailer;
+import com.fruitsalesplatform.entity.User;
 import com.fruitsalesplatform.service.RetailerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -15,6 +19,26 @@ import java.util.Map;
 public class RetailerController extends BaseController{
     @Resource
     RetailerService retailerService;
+
+    @RequestMapping(value = "/retailer/listPost", method = {RequestMethod.POST})
+    @ResponseBody
+    public String postRetailer(@RequestBody Retailer retailerPost, String startTime,
+                               String endTime)
+    {
+        Map<String, Object> map = this.retailerToMap(retailerPost);
+        if (startTime != null && !startTime.equals("")) {
+            map.put("startTime", startTime);
+        }
+
+        if (endTime != null && !endTime.equals("")) {
+            map.put("endTime", endTime);
+        }
+
+        List<Retailer> lstRetailer = retailerService.getMoreRecord(map);
+        String strReturn = JSON.toJSONString(lstRetailer);
+        return strReturn;       //转向首页
+    }
+
     //跳转至列表页面
     @RequestMapping(value = "/retailer/list.action", method = {RequestMethod.GET})
     public String list(Model model, Retailer retailer, String startTime,
@@ -30,7 +54,7 @@ public class RetailerController extends BaseController{
 
         List<Retailer> lstRetailer = retailerService.getMoreRecord(map);
         model.addAttribute("list", lstRetailer);
-        return "/home.jsp";       //转向首页
+        return "/retailer/retailerHome.jsp";       //转向首页
     }
 
     private Map<String, Object> retailerToMap(Retailer retailer) {

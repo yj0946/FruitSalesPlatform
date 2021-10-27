@@ -4,13 +4,13 @@ import com.fruitsalesplatform.entity.User;
 import com.fruitsalesplatform.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,4 +66,27 @@ public class UserNewController extends BaseController {
         return "/login.jsp";
     }
 
+    @RequestMapping(value = "getCommonParam", method = {RequestMethod.GET})
+    @ResponseBody
+    public String getCommonParam(@RequestParam(value = "username", required = false)String strUserName,
+                                 @RequestParam(value = "password", required = false)String strPassword) {
+        System.out.println("username:" + strUserName + ",password:" + strPassword);
+        return strUserName;
+    }
+
+    @RequestMapping(value = "getCommonByUser", method = {RequestMethod.GET})
+    @ResponseBody
+    public String getCommonByUser(User user)
+    {
+        System.out.println("username:" + user.getUserName() + ",password:" + user.getPassword());
+        return user.getUserName();
+    }
+
+    @RequestMapping(value = "getCommonByUserPost", method = {RequestMethod.POST})
+    @ResponseBody
+    public String getCommonByUserPost(@RequestBody User user)
+    {
+        System.out.println("username:" + user.getUserName() + ",password:" + user.getPassword());
+        return user.getUserName();
+    }
 }

@@ -7,7 +7,7 @@
     <resultMap id="retailerRM" type="retailer">
         <result property="mRetailerId" column="retailerId" />
         <result property="mName" column="name" />
-        <result property="mTelephone" column="telephone" />
+        <result property="mTelephone" column="telphone" />
         <result property="mAddress" column="address" />
         <result property="mStatus" column="status" />
         <result property="mCreateTime" column="createTime" />
@@ -16,41 +16,41 @@
     <!--查询一个数据量-->
     <!--SQL片段-->
     <sql id="query_retailer_where">
-        <if test="mName != null">
+        <if test="mName != null and mName != ''">
             <bind name="name" value="'%' + mName + '%'"/>
             and name like #{name}
         </if>
 
-        <if test="mAddress != null">
+        <if test="mAddress != null and mAddress != ''">
             <bind name="address" value="'%' + mAddress + '%'"/>
             and address like #{address}
         </if>
 
-        <if test="mStatus != null">
+        <if test="mStatus != null and mStatus != ''">
             <bind name="status" value="'%' + mStatus + '%'"/>
             and status like #{status}
         </if>
 
-        <if test="mTelephone != null">
-            and telephone = #{mTelephone}
+        <if test="mTelephone != null and mTelephone != ''">
+            and telphone = #{mTelephone}
         </if>
 
-        <if test="mCreateTime != null">
+        <if test="mCreateTime != null and mCreateTime != ''">
             and createTime = DATE_FORMAT(#{createTime}, '%Y-%m-%d %H:%i:%s')
         </if>
 
-        <if test="startTime != null">
+        <if test="startTime != null and startTime != ''">
             <![CDATA[and createTime >= DATE_FORMAT(#{createTime}, '%Y-%m-%d %H:%i:%s')]]>
         </if>
 
-        <if test="endTime != null">
-
+        <if test="endTime != null and endTime != ''">
+            <![CDATA[and endTime <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s')]]>
         </if>
     </sql>
 
     <!--查询-->
     <select id="find" parameterType="java.util.HashMap" resultMap="retailerRM">
-        select retailerId, name, telephone, address, status, createTime  from retailer
+        select retailerId, name, telphone, address, status, createTime  from retailer
         where 1=1
         <include refid="query_retailer_where"></include>
         <if test="mStartPage != null and mPageSize != null">
@@ -68,7 +68,7 @@
         <selectKey keyProperty="mRetailerId" order="AFTER" resultType="int">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        insert into retailer(name, telephone, address, status, createTime)
+        insert into retailer(name, telphone, address, status, createTime)
         values(#{mName}, #{mTelephone}, #{mAddress}, #{mStatus}, #{mCreateTime})
     </insert>
 
@@ -76,7 +76,7 @@
         update retailer
         <set>
             <if test="mName != null">name=#{mName}</if>
-            <if test="mTelephone != null">telephone=#{mTelephone}</if>
+            <if test="mTelephone != null">telphone=#{mTelephone}</if>
             <if test="mAddress != null">address=#{mAddress}</if>
             <if test="mStatus != null">status=#{mStatus}</if>
         </set>

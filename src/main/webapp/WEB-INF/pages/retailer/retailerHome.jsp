@@ -28,7 +28,7 @@
     </script>
 </head>
 <body>
-    <%@ include file="../menu.jsp"%>
+<%--    <%@ include file="../menu.jsp"%>--%>
     <br/>
     <form action="list.action" method="post">
         姓名：<input type="text" name="Name" style="width: 120px" />
@@ -58,18 +58,18 @@
                 <c:forEach items="${list}" var="item" varStatus="status">
                     <tr>
                         <td>${status.index+1}</td>
-                        <td>${item.Name}</td>
-                        <td>${item.Telephone}</td>
-                        <td>${item.Address}</td>
+                        <td>${item.name}</td>
+                        <td>${item.telephone}</td>
+                        <td>${item.address}</td>
                         <td>
-                            <c:if test="${item.Status==1}">
+                            <c:if test="${item.status==1}">
                                 <span style=".ColorBlue">启用</span>
                             </c:if>
-                            <c:if test="${item.Status==0}">
+                            <c:if test="${item.status==0}">
                                 <span style=".ColorRed">停用</span>
                             </c:if>
                         </td>
-                        <td>${item.CreateTime}</td>
+                        <td>${item.createTime}</td>
                         <td>
                             <a>编辑</a>|
                             <a>删除</a>
