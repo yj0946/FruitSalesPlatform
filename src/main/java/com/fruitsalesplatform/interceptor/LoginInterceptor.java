@@ -10,6 +10,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
 //        String strUri = httpServletRequest.getRequestURI();
+//        if (strUri.contains("swagger") || strUri.contains("webjars") || strUri.contains("v2")) {
+//            return true;
+//        }
+//
 //        if (!(strUri.contains("Login") || strUri.contains("login") || strUri.contains("register"))) {
 //            //非登录请求
 //            if (httpServletRequest.getSession().getAttribute("user") != null) {

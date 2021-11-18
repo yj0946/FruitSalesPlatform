@@ -36,11 +36,11 @@
         </if>
 
         <if test="mCreateTime != null and mCreateTime != ''">
-            and createTime = DATE_FORMAT(#{createTime}, '%Y-%m-%d %H:%i:%s')
+            <![CDATA[and createTime = DATE_FORMAT(#{mCreateTime}, '%Y-%m-%d %H:%i:%s')]]>
         </if>
 
         <if test="startTime != null and startTime != ''">
-            <![CDATA[and createTime >= DATE_FORMAT(#{createTime}, '%Y-%m-%d %H:%i:%s')]]>
+            <![CDATA[and createTime >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s')]]>
         </if>
 
         <if test="endTime != null and endTime != ''">

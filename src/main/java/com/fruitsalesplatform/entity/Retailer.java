@@ -1,5 +1,7 @@
 package com.fruitsalesplatform.entity;
 
+import javax.validation.constraints.Size;
+
 public class Retailer extends PageEntity{
     private String mRetailerId;
     private String mName;

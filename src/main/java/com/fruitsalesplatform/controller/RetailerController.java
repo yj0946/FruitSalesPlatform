@@ -1,9 +1,14 @@
 package com.fruitsalesplatform.controller;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fruitsalesplatform.entity.Retailer;
-import com.fruitsalesplatform.entity.User;
 import com.fruitsalesplatform.service.RetailerService;
+import com.fruitsalesplatform.viewResult.ViewResult;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,15 +21,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 @Controller
+@Api(value = "零售商接口", tags = "零售商管理相关的接口")
 public class RetailerController extends BaseController{
     @Resource
     RetailerService retailerService;
 
+    //方法参数说明，name参数名；value参数说明，备注；dataType参数类型；required 是否必传；defaultValue 默认值
+    @ApiImplicitParams({
+    @ApiImplicitParam(name = "retailerPost", value = "零售商实体", dataType = "Retailer", paramType = "query"),
+    @ApiImplicitParam(name = "startTime", value = "开始时间", dataType = "String", paramType = "query"),
+    @ApiImplicitParam(name = "endTime", value = "结束时间", dataType = "String", paramType = "query")})
+    //说明是什么方法(可以理解为方法注释)
+    @ApiOperation(value = "POST方法查询零售商", notes = "POST方法查询零售商")
     @RequestMapping(value = "/retailer/listPost", method = {RequestMethod.POST})
     @ResponseBody
     public String postRetailer(@RequestBody Retailer retailerPost, String startTime,
                                String endTime)
     {
+        Map<String, Object> map = getStringObjectMap(retailerPost, startTime, endTime);
+
+        List<Retailer> lstRetailer = retailerService.getMoreRecord(map);
+        ViewResult vPostRetailer = ViewResult.SUCCESS(lstRetailer);
+        String strJson = JSONObject.toJSONString(vPostRetailer, SerializerFeature.WriteMapNullValue);
+        return strJson;
+    }
+
+    private Map<String, Object> getStringObjectMap(@RequestBody Retailer retailerPost, String startTime, String endTime) {
         Map<String, Object> map = this.retailerToMap(retailerPost);
         if (startTime != null && !startTime.equals("")) {
             map.put("startTime", startTime);
@@ -34,23 +56,25 @@ public class RetailerController extends BaseController{
             map.put("endTime", endTime);
         }
 
-        List<Retailer> lstRetailer = retailerService.getMoreRecord(map);
-        String strReturn = JSON.toJSONString(lstRetailer);
-        return strReturn;       //转向首页
+        String strCreateTime = retailerPost.getCreateTime();
+        if (strCreateTime != null && !strCreateTime.equals("")) {
+            map.put("mCreateTime", strCreateTime);
+        }
+        return map;
     }
 
     //跳转至列表页面
-    @RequestMapping(value = "/retailer/list.action", method = {RequestMethod.GET})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "retailerPost", value = "零售商实体", dataType = "Retailer", paramType = "query"),
+            @ApiImplicitParam(name = "startTime", value = "开始时间", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间", dataType = "String", paramType = "query")})
+    //说明是什么方法(可以理解为方法注释)
+    @ApiOperation(value = "List方法查询零售商", notes = "List方法查询零售商")
+    @RequestMapping(value = "/retailer/list.action")
     public String list(Model model, Retailer retailer, String startTime,
                        String endTime) {
-        Map<String, Object> map = this.retailerToMap(retailer);
-        if (startTime != null && !startTime.equals("")) {
-            map.put("startTime", startTime);
-        }
+        Map<String, Object> map = getStringObjectMap(retailer, startTime, endTime);
 
-        if (endTime != null && !endTime.equals("")) {
-            map.put("endTime", endTime);
-        }
 
         List<Retailer> lstRetailer = retailerService.getMoreRecord(map);
         model.addAttribute("list", lstRetailer);
@@ -63,7 +87,7 @@ public class RetailerController extends BaseController{
         map.put("mAddress", checkStringIsEmpty(retailer.getAddress()));
         map.put("mStatus", retailer.getStatus() == -1 ? null : retailer.getStatus());
         map.put("mTelephone", checkStringIsEmpty(retailer.getTelephone()));
-        map.put("mCreateTime", checkStringIsEmpty(retailer.getCreateTime()));
+        //map.put("mCreateTime", checkStringIsEmpty(retailer.getCreateTime()));
 
         map.put("mStartPage", retailer.getStartPage());
         map.put("mPageSize", retailer.getPageSize());
