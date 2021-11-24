@@ -1,6 +1,8 @@
 package com.fruitsalesplatform.entity;
 
-public class PageEntity {
+import java.io.Serializable;
+
+public class PageEntity implements Serializable {
     private Integer mCurrentPage;
     private Integer mStartPage;
     private Integer mPageSize;
@@ -29,7 +31,7 @@ public class PageEntity {
 
     public Integer getPageSize() {
         if (mPageSize == null) {
-            mPageSize = 10;
+            mPageSize = 3;
         }
         return mPageSize;
     }

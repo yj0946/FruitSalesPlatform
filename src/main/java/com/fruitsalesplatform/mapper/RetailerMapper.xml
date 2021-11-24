@@ -59,9 +59,8 @@
     </select>
 
     <!--统计数量-->
-    <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
-        select COUNT(*) from retailer
-        <include refid="query_retailer_where"></include>
+    <select id="count" resultType="java.lang.Integer">
+        select COUNT(retailerId) as RetailerCount from retailer
     </select>
 
     <insert id="insert" parameterType="retailer">

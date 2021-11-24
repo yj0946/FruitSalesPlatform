@@ -13,5 +13,5 @@ public interface RetailerService {
     public void updateRecord(Retailer entity);             //更新数据
     public void deleteRecord(Serializable id);      //删除数据
     public void deleteRecord(Serializable[] ids);   //批量删除
-    public int count(Map map);
+    public int count();
 }

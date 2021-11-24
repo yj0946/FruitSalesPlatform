@@ -1,6 +1,8 @@
 package com.fruitsalesplatform.entity;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private int mUserid;
     private String mUserName;
     private String mPassword;

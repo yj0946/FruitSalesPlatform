@@ -75,6 +75,18 @@ public class RetailerController extends BaseController{
                        String endTime) {
         Map<String, Object> map = getStringObjectMap(retailer, startTime, endTime);
 
+        model.addAttribute("currentPage", retailer.getCurrentPage());   //当前页数
+        model.addAttribute("startPage", retailer.getStartPage());       //当前请求位置，默认为0
+
+        int countNumber = retailerService.count();
+        model.addAttribute("countNumber", countNumber);     //数据总和
+        int pageSize = retailer.getPageSize();                 //每页数据,默认为10
+        model.addAttribute("pageSize", pageSize);
+        int sumPageNumber = countNumber%pageSize == 0 ? (countNumber/pageSize) :
+                ((countNumber/pageSize) + 1);
+
+        model.addAttribute("sumPageNumber", sumPageNumber);        //总页数
+
 
         List<Retailer> lstRetailer = retailerService.getMoreRecord(map);
         model.addAttribute("list", lstRetailer);

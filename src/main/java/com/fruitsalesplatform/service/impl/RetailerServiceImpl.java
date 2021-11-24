@@ -4,6 +4,8 @@ import com.fruitsalesplatform.dao.RetailerDao;
 import com.fruitsalesplatform.entity.Retailer;
 import com.fruitsalesplatform.service.RetailerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -14,31 +16,39 @@ import java.util.Map;
 public class RetailerServiceImpl implements RetailerService {
       @Autowired
       RetailerDao retailerDao;
+
+      @Cacheable(value="getOneRecord")
       public Retailer getOneRecord(Serializable id) {
           return retailerDao.getOneRecord(id);
       }
 
+      @Cacheable(value="getMoreRecord")
       public List<Retailer> getMoreRecord(Map map) {
           return retailerDao.getMoreRecord(map);
       }
 
+      @CacheEvict(value= {"getOneRecord","getMoreRecord","count"}, allEntries=true)
       public void insertRecord(Retailer retailer) {
           retailerDao.insertRecord(retailer);
       }
 
+      @CacheEvict(value= {"getOneRecord","getMoreRecord","count"}, allEntries=true)
       public void updateRecord(Retailer retailer) {
           retailerDao.updateRecord(retailer);
       }
 
+      @CacheEvict(value= {"getOneRecord","getMoreRecord","count"}, allEntries=true)
       public void deleteRecord(Serializable id) {
           retailerDao.deleteRecord(id);
       }
 
+      @CacheEvict(value= {"getOneRecord","getMoreRecord","count"}, allEntries=true)
       public void deleteRecord(Serializable[] ids) {
           retailerDao.deleteRecord(ids);
       }
 
-      public int count(Map map) {
-           return retailerDao.count(map);
+      @Cacheable(value="count")
+      public int count() {
+           return retailerDao.count();
       }
 }

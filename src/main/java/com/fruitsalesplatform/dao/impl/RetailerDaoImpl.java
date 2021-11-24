@@ -14,7 +14,7 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer> implements RetailerDa
     }
 
     //实现接口自己的方法
-    public int count(Map map) {
-        return this.getSqlSession().selectOne(this.getStrNs() + ".count", map);
+    public int count() {
+        return this.getSqlSession().selectOne(this.getStrNs() + ".count");
     }
 }
