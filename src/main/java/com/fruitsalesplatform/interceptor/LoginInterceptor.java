@@ -14,6 +14,10 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        if (strUri.contains("insertPost")) {
+            return true;
+        }
+
         if (!(strUri.contains("Login") || strUri.contains("login") || strUri.contains("register"))) {
             //非登录请求
             if (httpServletRequest.getSession().getAttribute("user") != null) {

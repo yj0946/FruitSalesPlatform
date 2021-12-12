@@ -1,10 +1,13 @@
 package com.fruitsalesplatform.dao.impl;
 
 import com.fruitsalesplatform.dao.BaseDao;
+import junit.framework.Test;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.log4j.Logger;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +15,10 @@ import java.util.Map;
 
 @Repository
 public abstract class BaseDaoImpl<T> extends SqlSessionDaoSupport implements BaseDao<T> {
+       public static final String BASE_DAO_OK = "OK";
+       private Logger mLogBaseDaoImpl  = Logger.getLogger(Test.class);
+       String mReturnMsg;
+       String mStrFullName;
        @Autowired
        //mybatis-spring 1.0无须此方法; mybatis-spring 1.2必须注入
        public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
@@ -30,32 +37,51 @@ public abstract class BaseDaoImpl<T> extends SqlSessionDaoSupport implements Bas
 
         @Override
         public T getOneRecord(Serializable id) {
-            return this.getSqlSession().selectOne(strNs + ".get", id);
+            mStrFullName = strNs.concat(".get");
+            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            return this.getSqlSession().selectOne(mStrFullName, id);
         }
 
         @Override
         public List<T> getMoreRecord(Map map) {
-            List<T> oList = this.getSqlSession().selectList(strNs + ".find", map);
+            mStrFullName = strNs.concat(".find");
+            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            List<T> oList = this.getSqlSession().selectList(mStrFullName, map);
             return oList;
         }
 
         @Override
         public void insertRecord(T entity) {
-            this.getSqlSession().insert(strNs + ".insert", entity);
+            mStrFullName = strNs.concat(".insert");
+            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            this.getSqlSession().insert(mStrFullName, entity);
         }
 
         @Override
-        public void updateRecord(T entity) {
-            this.getSqlSession().update(strNs + ".update", entity);
+        public String updateRecord(T entity) {
+            mStrFullName = strNs.concat(".update");
+            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            mReturnMsg = BASE_DAO_OK;
+            try {
+                this.getSqlSession().update(mStrFullName, entity);
+            } catch (Exception e) {
+                mReturnMsg = e.getMessage();
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }
+            return mReturnMsg;
         }
 
         @Override
         public void deleteRecord(Serializable id) {
-            this.getSqlSession().delete(strNs + ".deleteById", id);
+            mStrFullName = strNs.concat(".deleteById");
+            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            this.getSqlSession().delete(mStrFullName, id);
         }
 
         @Override
         public void deleteRecord(Serializable[] ids) {
-            this.getSqlSession().delete(strNs + ".delete", ids);
+            mStrFullName = strNs.concat(".delete");
+            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            this.getSqlSession().delete(mStrFullName, ids);
         }
 }

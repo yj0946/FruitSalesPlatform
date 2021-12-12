@@ -33,8 +33,8 @@ public class RetailerServiceImpl implements RetailerService {
       }
 
       @CacheEvict(value= {"getOneRecord","getMoreRecord","count"}, allEntries=true)
-      public void updateRecord(Retailer retailer) {
-          retailerDao.updateRecord(retailer);
+      public String updateRecord(Retailer retailer) {
+          return retailerDao.updateRecord(retailer);
       }
 
       @CacheEvict(value= {"getOneRecord","getMoreRecord","count"}, allEntries=true)
@@ -50,5 +50,11 @@ public class RetailerServiceImpl implements RetailerService {
       @Cacheable(value="count")
       public int count() {
            return retailerDao.count();
+      }
+
+      @CacheEvict(value= {"getOneRecord","getMoreRecord","count"}, allEntries=true)
+      public String insertMoreRecord(Retailer[] entityArr)
+      {
+          return retailerDao.insertMoreRecord(entityArr);
       }
 }

@@ -18,8 +18,30 @@
        http://www.springframework.org/schema/cache
        http://www.springframework.org/schema/cache/spring-cache.xsd">
        <!--1.扫描controller包-->
-       <context:component-scan base-package="com.fruitsalesplatform.controller"/>
-       <context:component-scan base-package="com.fruitsalesplatform.service"/>
+<!--       <context:component-scan base-package="com.fruitsalesplatform">-->
+<!--            制定扫包规则 ,只扫描使用@Controller注解的JAVA类-->
+<!--           <context:include-filter type="annotation"-->
+<!--                                   expression="org.springframework.stereotype.Controller"/>-->
+<!--           <context:exclude-filter type="annotation"-->
+<!--                                   expression="org.springframework.stereotype.Service"/>-->
+<!--       </context:component-scan>-->
+<!--    spring-mvc.xml:-->
+<!--    &lt;!&ndash; 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 &ndash;&gt;-->
+<!--    <context:component-scanbase-package="com.yltd.cnyun">-->
+<!--    &lt;!&ndash; 制定扫包规则 ,只扫描使用@Controller注解的JAVA类 &ndash;&gt;-->
+<!--    <context:include-filtertype="annotation"-->
+<!--    expression="org.springframework.stereotype.Controller"/>-->
+<!--    <context:exclude-filter    type="annotation" expression="org.springframework.stereotype.Service"    />-->
+<!--</context:component-scan>-->
+
+       <context:component-scan base-package="com.fruitsalesplatform.controller">
+                      <context:include-filter type="annotation"
+                                              expression="org.springframework.stereotype.Controller"/>
+       </context:component-scan>
+       <context:component-scan base-package="com.fruitsalesplatform.service">
+                      <context:exclude-filter type="annotation"
+                                              expression="org.springframework.stereotype.Service"/>
+       </context:component-scan>
        <context:component-scan base-package="com.fruitsalesplatform.dao"/>
        <context:component-scan base-package="com.fruitsalesplatform.entity"/>
 

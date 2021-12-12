@@ -64,11 +64,8 @@
     </select>
 
     <insert id="insert" parameterType="retailer">
-        <selectKey keyProperty="mRetailerId" order="AFTER" resultType="int">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
-        insert into retailer(name, telphone, address, status, createTime)
-        values(#{mName}, #{mTelephone}, #{mAddress}, #{mStatus}, #{mCreateTime})
+        insert into retailer(retailerid,name, telphone, address, status, createTime)
+        values(#{mRetailerId}, #{mName}, #{mTelephone}, #{mAddress}, #{mStatus}, #{mCreateTime})
     </insert>
 
     <update id="update" parameterType="retailer">

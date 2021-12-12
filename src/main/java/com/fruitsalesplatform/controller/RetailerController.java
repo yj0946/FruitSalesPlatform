@@ -17,16 +17,84 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 @Controller
 @Api(value = "零售商接口", tags = "零售商管理相关的接口")
 public class RetailerController extends BaseController{
+    public static final String OK = "OK";
     @Resource
     RetailerService retailerService;
 
+    @ApiOperation(value = "POST方法查询零售商Id", notes = "POST方法编辑零售商Id")
+    @RequestMapping(value = "/retailer/queryRetailerById", method = {RequestMethod.POST})
+    public @ResponseBody Retailer queryRetailerById(@RequestBody String strJson) {
+        String id = JSONObject.parseObject(strJson).getString("id");
+        //@ResponseBody将retailer转换成JSON格式输出。
+        return retailerService.getOneRecord(id);
+    }
+
+    @ApiOperation(value = "POST方法编辑零售商", notes = "POST方法编辑零售商")
+    @RequestMapping(value = "/retailer/updateRetailer", method = {RequestMethod.POST})
+    public @ResponseBody Retailer updateRetailer(Retailer retailer) {
+        String strMsg = retailerService.updateRecord(retailer);
+        if (strMsg.equals(OK)) {
+            return null;
+        }
+        return retailer;
+    }
+
+    @ApiOperation(value = "POST方法编辑零售商(返回字符串)", notes = "POST方法编辑零售商(返回字符串)")
+    @RequestMapping(value = "/retailer/updateRetailer", method = {RequestMethod.POST})
+    public String updateRetailer(Model model, Retailer retailer) {
+        String strMsg = retailerService.updateRecord(retailer);
+        if (strMsg.equals(OK)) {
+            return null;
+        }
+        Retailer queryRetailer = new Retailer();
+        queryRetailer.setStartPage(retailer.getStartPage());
+        queryRetailer.setCurrentPage(retailer.getCurrentPage());
+        queryRetailer.setPageSize(retailer.getPageSize());
+        queryRetailer.setStatus(-1);
+        return list(model, queryRetailer, null, null);
+    }
+
     //方法参数说明，name参数名；value参数说明，备注；dataType参数类型；required 是否必传；defaultValue 默认值
+    //说明是什么方法(可以理解为方法注释)
+    @ApiOperation(value = "POST方法插入零售商", notes = "POST方法插入零售商")
+    @RequestMapping(value = "/retailer/insertRetailer", method = {RequestMethod.POST})
+    @ResponseBody
+    public String insertRetailer(@RequestBody Retailer[] retailerPost)
+    {
+        if (retailerPost == null || retailerPost.length == 0) {
+             return null;
+        }
+//        SimpleDateFormat sdf = new SimpleDateFormat();// 格式化时间
+//        sdf.applyPattern("yyyy-MM-dd HH:mm:ss");// a为am/pm的标记
+//        Date date = new Date();// 获取当前时间
+//        Retailer[] retailerPost = new Retailer[10];
+//        Retailer retailer;
+//        for (int i = 0; i < 10; i++) {
+//            retailer = new Retailer();
+//            retailer.setRetailerId(UUID.randomUUID().toString());
+//            retailer.setAddress("广东省东莞市大朗镇黎贝岭村新围仔402信澜居1518");
+//            retailer.setName("周超");
+//            retailer.setStatus(1);
+//            retailer.setTelephone("13398970456");
+//            if (i == 5) {
+//                retailer.setCreateTime("123456");
+//            } else {
+//                retailer.setCreateTime(sdf.format(date));
+//            }
+//            retailerPost[i] = retailer;
+//        }
+        //String strJson = JSONObject.toJSONString(retailerPost);
+        String strMsg = "ok";
+        strMsg = retailerService.insertMoreRecord(retailerPost);
+        return strMsg;
+    }
+
     @ApiImplicitParams({
     @ApiImplicitParam(name = "retailerPost", value = "零售商实体", dataType = "Retailer", paramType = "query"),
     @ApiImplicitParam(name = "startTime", value = "开始时间", dataType = "String", paramType = "query"),
@@ -35,7 +103,7 @@ public class RetailerController extends BaseController{
     @ApiOperation(value = "POST方法查询零售商", notes = "POST方法查询零售商")
     @RequestMapping(value = "/retailer/listPost", method = {RequestMethod.POST})
     @ResponseBody
-    public String postRetailer(@RequestBody Retailer retailerPost, String startTime,
+    public String queryRetailer(@RequestBody Retailer retailerPost, String startTime,
                                String endTime)
     {
         Map<String, Object> map = getStringObjectMap(retailerPost, startTime, endTime);

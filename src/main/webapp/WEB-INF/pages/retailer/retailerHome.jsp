@@ -19,6 +19,19 @@
         .ColorBlue{
             color:blue;
         }
+        .c{
+            border-style: solid;width: 200px;height: 130px;
+            margin: 4px 23px 0px 23px;border-radius:5px;display:block;
+            background:#fff;
+            margin:10% auto;
+        }
+        .mask,.addMask{
+            width:100%;
+            height:100%;
+            position: absolute;
+            background:rgba(0,0,0,.3);
+            display: none;
+        }
     </style>
 
     <script type="text/javascript">
@@ -87,11 +100,69 @@
                 }
             }
         }
+
+        function editRetailer(id){
+            var message="{'id':'"+id+"'}";
+            $.ajax({
+                type:'post',
+                url:'${pageContext.request.contextPath}/retailer/queryRetailerById.action',
+                contentType:'application/json;charset=utf-8',
+                data:message,//数据格式是json串
+                success:function(data){//返回json结果
+                    $("#editName").val(data["name"]);
+                    $("#editTelphone").val(data["telphone"]);
+                    $("#editAddress").val(data["address"]);
+                    $("#retailerId").val(data["retailerId"]);
+                    $("#editStatus").val(data["status"]);
+                    $("#eStatus").val(data["status"]);
+                    //显示弹出框
+                    $(".mask").css("display","block");
+                    //引入分页信息至该form表单
+                    $("#eStartPage").val($("#startPage").val());
+                    $("#eCurrentPage").val($("#currentPage").val());
+                    $("#ePageSize").val($("#pageSize").val());
+                }
+            });
+        }
+
+        function cancelEdit(){
+            $(".mask").css("display","none");
+        }
+
+        function changeEditStatus(){
+            var status = document.getElementById("editStatus").value;
+            document.getElementById("eStatus").value=status;
+        }
+
     </script>
 </head>
 <body onload="init()">
 <%--    <%@ include file="../menu.jsp"%>--%>
     <br/>
+
+    <div class="mask">
+       <div class="c">
+           <div style="background-color:#173e65;height:20px;color:#fff;font-size:12px;padding-left:7px;">
+            修改信息<font style="float:right;padding-right: 10px;" onclick="cancelEdit()">x</font>
+           </div>
+                <form id="editForm" action="edit.action" method="post">
+                    姓名：<input type="text" id="editName" name="name" style="width:120px"/> <br/>
+                    手机：<input type="text" id="editTelphone" name="telphone" style="width:120px"/><br/>
+                    地址：<input type="text" id="editAddress" name="address" style="width:120px"/><br/>
+                    状态：<select id="eStatus" onchange="changeEditStatus()">
+                    <option value="1">启用</option>
+                    <option value="0">停用</option>
+                </select><br/>
+                    <input type="hidden" name="retailerId" id="retailerId"/>
+                    <input type="hidden" name="status" id="editStatus"/>
+                    <input type="hidden" name="startPage" id="eStartPage"/>
+                    <input type="hidden" name="currentPage" id="eCurrentPage"/>
+                    <input type="hidden" name="pageSize" id="ePageSize"/>
+                    <input type="submit" value="提交" style="background-color:#173e65;color:#ffffff;width:70px;"/>
+                </form>
+            </div>
+      </div>
+
     <form id="listForm" action="list.action" method="post">
         姓名：<input type="text" name="Name" style="width: 120px" />
         手机：<input type="text" name="Telephone" style="width: 120px" />
@@ -140,7 +211,7 @@
                         </td>
                         <td>${item.createTime}</td>
                         <td>
-                            <a>编辑</a>|
+                            <a onclick="editRetailer('${item.retailerId}')">编辑</a>|
                             <a>删除</a>
                         </td>
                     </tr>
