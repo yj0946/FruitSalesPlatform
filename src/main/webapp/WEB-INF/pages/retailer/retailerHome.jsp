@@ -34,8 +34,14 @@
         }
     </style>
 
+    <
+</head>
+<body onload="init()">
+<%--    <%@ include file="../menu.jsp"%>--%>
+    <br/>
+
     <script type="text/javascript">
-        src="/jsmin/jquery-1.4.4.min.js"
+    src="/jsmin/jquery-1.4.4.min.js"
     </script>
 
     <script type="text/javascript">
@@ -50,102 +56,105 @@
 
             document.getElementById("pageInfo").innerHTML= info;
         }
-        function changeStatus() {
-            const status = document.getElementById("indexStatus").value;
-            document.getElementById("Status").value = status;
+    function changeStatus() {
+        const status = document.getElementById("indexStatus").value;
+        document.getElementById("Status").value = status;
+    }
+
+    function toPrePage() {
+        var currentPageObject = document.getElementById("currentPage");
+        var currentPage = parseInt(currentPageObject.value);
+        if (currentPage == 1){
+            alert("数据已到顶!");
+        } else {
+            currentPageObject.value = currentPage - 1;
+            var pageSize = parseInt(document.getElementById("pageSize").value);
+            var startPageObject = document.getElementById("startPage");
+            startPageObject.value = parseInt(startPageObject.value) - pageSize;
+            document.getElementById("listForm").submit();
         }
-        
-        function toPrePage() {
-            var currentPageObject = document.getElementById("currentPage");
-            var currentPage = parseInt(currentPageObject.value);
-            if (currentPage == 1){
+    }
+
+    function toNextPage() {
+        var currentPageObject = document.getElementById("currentPage");
+        var currentPage = parseInt(currentPageObject.value);
+        var sumPage = parseInt(document.getElementById("sumPageNumber").value);
+        if (currentPage >= sumPage){
+            alert("数据已到顶!");
+        } else {
+            currentPageObject.value = currentPage + 1;
+            var pageSize = parseInt(document.getElementById("pageSize").value);
+            var startPageObject = document.getElementById("startPage");
+            startPageObject.value = parseInt(startPageObject.value) + pageSize;
+            document.getElementById("listForm").submit();
+        }
+    }
+
+    function toLocationPage() {
+        var pageNumber = document.getElementById("pageNumber").value;
+        var currentPageObject = document.getElementById("currentPage").value;
+        var currentPage = currentPageObject.value;
+        if(pageNumber == null || pageNumber == "") {
+            alert("请输入要跳转的页数");
+        } else {
+            pageNumber = parseInt(pageNumber);
+            var sumPae = parseInt(document.getElementById("sumPageNumber").value);
+            if(pageNumber < 1) {
+                alert("数据已到底!");
+            } else if(pageNumber > sumPae) {
                 alert("数据已到顶!");
-            } else {
-                currentPageObject.value = currentPage - 1;
-                var pageSize = parseInt(document.getElementById("pageSize").value);
-                var startPageObject = document.getElementById("startPage");
-                startPageObject.value = parseInt(startPageObject.value) - pageSize;
-                document.getElementById("listForm").submit();
             }
         }
-        
-        function toNextPage() {
-            var currentPageObject = document.getElementById("currentPage");
-            var currentPage = parseInt(currentPageObject.value);
-            var sumPage = parseInt(document.getElementById("sumPageNumber").value);
-            if (currentPage >= sumPage){
-                alert("数据已到顶!");
-            } else {
-                currentPageObject.value = currentPage + 1;
-                var pageSize = parseInt(document.getElementById("pageSize").value);
-                var startPageObject = document.getElementById("startPage");
-                startPageObject.value = parseInt(startPageObject.value) + pageSize;
-                document.getElementById("listForm").submit();
+    }
+
+    function editRetailer(id){
+        var message = "{\'id\':\'" + id + "\'}"
+        alert(message)
+        $.ajax({
+            type:'post',
+            url:'${pageContext.request.contextPath}/retailer/queryRetailerById.action',
+            contentType:'application/json;charset=utf-8',
+            data:message,//数据格式是json串
+            success:function(data){//返回json结果
+                $("#editName").val(data["name"]);
+                $("#editTelphone").val(data["telphone"]);
+                $("#editAddress").val(data["address"]);
+                $("#retailerId").val(data["retailerId"]);
+                $("#editStatus").val(data["status"]);
+                $("#eStatus").val(data["status"]);
+                //显示弹出框
+                $(".mask").css("display","block");
+                //引入分页信息至该form表单
+                $("#eStartPage").val($("#startPage").val());
+                $("#eCurrentPage").val($("#currentPage").val());
+                $("#ePageSize").val($("#pageSize").val());
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.status);
+                alert(XMLHttpRequest.readyState);
+                alert(textStatus);
+                alert(message);
             }
-        }
+        });
+    }
 
-        function toLocationPage() {
-            var pageNumber = document.getElementById("pageNumber").value;
-            var currentPageObject = document.getElementById("currentPage").value;
-            var currentPage = currentPageObject.value;
-            if(pageNumber == null || pageNumber == "") {
-                alert("请输入要跳转的页数");
-            } else {
-                pageNumber = parseInt(pageNumber);
-                var sumPae = parseInt(document.getElementById("sumPageNumber").value);
-                if(pageNumber < 1) {
-                    alert("数据已到底!");
-                } else if(pageNumber > sumPae) {
-                    alert("数据已到顶!");
-                }
-            }
-        }
+    function cancelEdit(){
+        $(".mask").css("display","none");
+    }
 
-        function editRetailer(id){
-            var message="{'id':'"+id+"'}";
-            $.ajax({
-                type:'post',
-                url:'${pageContext.request.contextPath}/retailer/queryRetailerById.action',
-                contentType:'application/json;charset=utf-8',
-                data:message,//数据格式是json串
-                success:function(data){//返回json结果
-                    $("#editName").val(data["name"]);
-                    $("#editTelphone").val(data["telphone"]);
-                    $("#editAddress").val(data["address"]);
-                    $("#retailerId").val(data["retailerId"]);
-                    $("#editStatus").val(data["status"]);
-                    $("#eStatus").val(data["status"]);
-                    //显示弹出框
-                    $(".mask").css("display","block");
-                    //引入分页信息至该form表单
-                    $("#eStartPage").val($("#startPage").val());
-                    $("#eCurrentPage").val($("#currentPage").val());
-                    $("#ePageSize").val($("#pageSize").val());
-                }
-            });
-        }
-
-        function cancelEdit(){
-            $(".mask").css("display","none");
-        }
-
-        function changeEditStatus(){
-            var status = document.getElementById("editStatus").value;
-            document.getElementById("eStatus").value=status;
-        }
+    function changeEditStatus(){
+        var status = document.getElementById("editStatus").value;
+        document.getElementById("eStatus").value=status;
+    }
 
     </script>
-</head>
-<body onload="init()">
-<%--    <%@ include file="../menu.jsp"%>--%>
-    <br/>
 
     <div class="mask">
        <div class="c">
            <div style="background-color:#173e65;height:20px;color:#fff;font-size:12px;padding-left:7px;">
             修改信息<font style="float:right;padding-right: 10px;" onclick="cancelEdit()">x</font>
            </div>
-                <form id="editForm" action="edit.action" method="post">
+                <form id="editForm" action="queryRetailerById.action" method="post">
                     姓名：<input type="text" id="editName" name="name" style="width:120px"/> <br/>
                     手机：<input type="text" id="editTelphone" name="telphone" style="width:120px"/><br/>
                     地址：<input type="text" id="editAddress" name="address" style="width:120px"/><br/>

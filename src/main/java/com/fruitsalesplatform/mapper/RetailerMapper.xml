@@ -49,6 +49,12 @@
     </sql>
 
     <!--查询-->
+    <select id="get" parameterType="java.lang.String" resultMap="retailerRM">
+        select retailerId, name, telphone, address, status, createTime  from retailer
+        where retailerId = #{id}
+    </select>
+
+    <!--查询-->
     <select id="find" parameterType="java.util.HashMap" resultMap="retailerRM">
         select retailerId, name, telphone, address, status, createTime  from retailer
         where 1=1
@@ -71,10 +77,10 @@
     <update id="update" parameterType="retailer">
         update retailer
         <set>
-            <if test="mName != null">name=#{mName}</if>
-            <if test="mTelephone != null">telphone=#{mTelephone}</if>
-            <if test="mAddress != null">address=#{mAddress}</if>
-            <if test="mStatus != null">status=#{mStatus}</if>
+            <if test="mName != null and mName != ''">name=#{mName},</if>
+            <if test="mTelephone != null and mTelephone != ''">telphone=#{mTelephone},</if>
+            <if test="mAddress != null and mAddress != ''">address=#{mAddress},</if>
+            <if test="mStatus != null and mStatus != ''">status=#{mStatus}</if>
         </set>
         where retailerId=#{mRetailerId}
     </update>

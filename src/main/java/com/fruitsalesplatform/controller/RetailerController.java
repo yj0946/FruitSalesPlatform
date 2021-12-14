@@ -1,8 +1,10 @@
 package com.fruitsalesplatform.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fruitsalesplatform.entity.Retailer;
+import com.fruitsalesplatform.entity.User;
 import com.fruitsalesplatform.service.RetailerService;
 import com.fruitsalesplatform.viewResult.ViewResult;
 import io.swagger.annotations.Api;
@@ -28,6 +30,12 @@ public class RetailerController extends BaseController{
     RetailerService retailerService;
 
     @ApiOperation(value = "POST方法查询零售商Id", notes = "POST方法编辑零售商Id")
+    @RequestMapping(value = "/retailer/deleteByRetailerById", method = {RequestMethod.POST})
+    public String deleteRetailer(@RequestBody Retailer retailer) {
+        return "";
+    }
+
+    @ApiOperation(value = "POST方法查询零售商Id", notes = "POST方法编辑零售商Id")
     @RequestMapping(value = "/retailer/queryRetailerById", method = {RequestMethod.POST})
     public @ResponseBody Retailer queryRetailerById(@RequestBody String strJson) {
         String id = JSONObject.parseObject(strJson).getString("id");
@@ -37,7 +45,7 @@ public class RetailerController extends BaseController{
 
     @ApiOperation(value = "POST方法编辑零售商", notes = "POST方法编辑零售商")
     @RequestMapping(value = "/retailer/updateRetailer", method = {RequestMethod.POST})
-    public @ResponseBody Retailer updateRetailer(Retailer retailer) {
+    public @ResponseBody Retailer updateRetailer(@RequestBody Retailer retailer) {
         String strMsg = retailerService.updateRecord(retailer);
         if (strMsg.equals(OK)) {
             return null;
@@ -46,7 +54,7 @@ public class RetailerController extends BaseController{
     }
 
     @ApiOperation(value = "POST方法编辑零售商(返回字符串)", notes = "POST方法编辑零售商(返回字符串)")
-    @RequestMapping(value = "/retailer/updateRetailer", method = {RequestMethod.POST})
+    @RequestMapping(value = "/retailer/updateRetailerModel", method = {RequestMethod.POST})
     public String updateRetailer(Model model, Retailer retailer) {
         String strMsg = retailerService.updateRecord(retailer);
         if (strMsg.equals(OK)) {

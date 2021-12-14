@@ -12,6 +12,7 @@ public interface RetailerService {
     public void insertRecord(Retailer entity);             //插入数据
     public String insertMoreRecord(Retailer[] entityArr);    //批量插入数据
     public String updateRecord(Retailer entity);             //更新数据
+    public String updateMoreRetailer(Retailer[] retailers);  //批量更新数据
     public void deleteRecord(Serializable id);      //删除数据
     public void deleteRecord(Serializable[] ids);   //批量删除
     public int count();

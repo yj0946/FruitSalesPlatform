@@ -57,4 +57,9 @@ public class RetailerServiceImpl implements RetailerService {
       {
           return retailerDao.insertMoreRecord(entityArr);
       }
+
+      @CacheEvict(value= {"getOneRecord","getMoreRecord","count"}, allEntries=true)
+      public String updateMoreRetailer(Retailer[] retailers) {
+        return retailerDao.updateMoreRetailer(retailers);
+      }
 }

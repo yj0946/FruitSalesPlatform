@@ -9,4 +9,6 @@ public interface RetailerDao extends BaseDao<Retailer>{
     public int count();    //根据条件统计结果集树林
 
     public String insertMoreRecord(Retailer[] retailers);
+
+    public String updateMoreRetailer(Retailer[] retailers);
 }
