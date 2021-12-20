@@ -38,13 +38,13 @@ public class RetailerServiceImpl implements RetailerService {
       }
 
       @CacheEvict(value= {"getOneRecord","getMoreRecord","count"}, allEntries=true)
-      public void deleteRecord(Serializable id) {
-          retailerDao.deleteRecord(id);
+      public String deleteRecord(Serializable id) {
+         return retailerDao.deleteRecord(id);
       }
 
       @CacheEvict(value= {"getOneRecord","getMoreRecord","count"}, allEntries=true)
-      public void deleteRecord(Serializable[] ids) {
-          retailerDao.deleteRecord(ids);
+      public String deleteRecordMore(List<String> ids) {
+         return retailerDao.deleteRecordMore(ids);
       }
 
       @Cacheable(value="count")

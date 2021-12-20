@@ -1,6 +1,6 @@
 package com.fruitsalesplatform.entity;
 
-public class QueryRetailer {
+public class RetailerId {
     public String id;
 
     public String getId() {

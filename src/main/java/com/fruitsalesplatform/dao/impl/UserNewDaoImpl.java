@@ -5,7 +5,7 @@ import com.fruitsalesplatform.entity.User;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserNewDaoImpl extends BaseDaoImpl<User> implements UserNewDao {
+public class UserNewDaoImpl extends BaseDaoImpl<User, String> implements UserNewDao {
 
     public UserNewDaoImpl() {
         //设置命名空间

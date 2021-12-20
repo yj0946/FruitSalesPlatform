@@ -14,6 +14,76 @@
     </resultMap>
 
     <!--查询一个数据量-->
+    <!--SQL片段 No Where-->
+    <sql id="query_retailer_no_trim">
+       <trim prefix="where" prefixOverrides="and">
+           <if test="mName != null and mName != ''">
+               <bind name="name" value="'%' + mName + '%'"/>
+               and name like #{name}
+           </if>
+
+           <if test="mAddress != null and mAddress != ''">
+               <bind name="address" value="'%' + mAddress + '%'"/>
+               and address like #{address}
+           </if>
+
+           <if test="mStatus != null and mStatus != ''">
+               <bind name="status" value="'%' + mStatus + '%'"/>
+               and status like #{status}
+           </if>
+
+           <if test="mTelephone != null and mTelephone != ''">
+               and telphone = #{mTelephone}
+           </if>
+
+           <if test="mCreateTime != null and mCreateTime != ''">
+               <![CDATA[and createTime = DATE_FORMAT(#{mCreateTime}, '%Y-%m-%d %H:%i:%s')]]>
+           </if>
+
+           <if test="startTime != null and startTime != ''">
+               <![CDATA[and createTime >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s')]]>
+           </if>
+
+           <if test="endTime != null and endTime != ''">
+               <![CDATA[and endTime <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s')]]>
+           </if>
+       </trim>
+    </sql>
+    <!--SQL片段 No Where-->
+    <sql id="query_retailer_no_where">
+         <where>
+             <if test="mName != null and mName != ''">
+                 <bind name="name" value="'%' + mName + '%'"/>
+                 and name like #{name}
+             </if>
+
+             <if test="mAddress != null and mAddress != ''">
+                 <bind name="address" value="'%' + mAddress + '%'"/>
+                 and address like #{address}
+             </if>
+
+             <if test="mStatus != null and mStatus != ''">
+                 <bind name="status" value="'%' + mStatus + '%'"/>
+                 and status like #{status}
+             </if>
+
+             <if test="mTelephone != null and mTelephone != ''">
+                 and telphone = #{mTelephone}
+             </if>
+
+             <if test="mCreateTime != null and mCreateTime != ''">
+                 <![CDATA[and createTime = DATE_FORMAT(#{mCreateTime}, '%Y-%m-%d %H:%i:%s')]]>
+             </if>
+
+             <if test="startTime != null and startTime != ''">
+                 <![CDATA[and createTime >= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s')]]>
+             </if>
+
+             <if test="endTime != null and endTime != ''">
+                 <![CDATA[and endTime <= DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s')]]>
+             </if>
+         </where>
+    </sql>
     <!--SQL片段-->
     <sql id="query_retailer_where">
         <if test="mName != null and mName != ''">
@@ -85,15 +155,69 @@
         where retailerId=#{mRetailerId}
     </update>
 
+    <update id="updatePath" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update retailer
+            <set>
+                <if test="mName != null and mName != ''">name=#{mName},</if>
+                <if test="mTelephone != null and mTelephone != ''">telphone=#{mTelephone},</if>
+                <if test="mAddress != null and mAddress != ''">address=#{mAddress},</if>
+                <if test="mStatus != null and mStatus != ''">status=#{mStatus}</if>
+            </set>
+            where retailerId=#{mRetailerId}
+        </foreach>
+    </update>
+
+    <update id="updatePathByPrefix" parameterType="java.util.List">
+        update retailer
+           <trim prefix="set" suffixOverrides=",">
+               <trim prefix="name = case" suffix="end,">
+                   <foreach collection="list" item="item" index="index">
+                       <if test="item.mName != null and item.mName != ''">
+                           when retailerid = #{item.mRetailerId} then #{item.mName}
+                       </if>
+                   </foreach>
+               </trim>
+
+               <trim prefix="telphone = case" suffix="end,">
+                    <foreach collection="list" item="item" index="index">
+                        <if test="item.mTelephone != null and item.mTelephone != ''">
+                            when retailerid = #{item.mRetailerId} then #{item.mTelephone}
+                        </if>
+                    </foreach>
+               </trim>
+
+               <trim prefix="address = case" suffix="end,">
+                    <foreach collection="list" item="item" index="index">
+                        <if test="item.mAddress != null and item.mAddress != ''">
+                            when retailerid = #{item.mRetailerId} then #{item.mAddress}
+                        </if>
+                    </foreach>
+               </trim>
+
+               <trim prefix="status = case" suffix="end,">
+                   <foreach collection="list" item="item" index="index">
+                       <if test="item.mStatus != null and item.mStatus != ''">
+                           when retailerid = #{item.mRetailerId} then #{item.mStatus}
+                       </if>
+                   </foreach>
+               </trim>
+           </trim>
+           where retailerid in
+           <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+               #{item.mRetailerId}
+           </foreach>
+    </update>
+
     <delete id="deleteById" parameterType="java.lang.String">
-        delete from retailer where retailer = #{mRetailerId}
+        delete from retailer where retailerId = #{mRetailerId}
     </delete>
 
-    <delete id="delete" parameterType="java.lang.String">
+    <delete id="delete" parameterType="java.util.List">
         delete from retailer
         where retailerId in
-        <foreach collection="array" item="retailerId" open="(" close=")" separator=",">
-            #{mRetailerId}
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
         </foreach>
     </delete>
 </mapper>

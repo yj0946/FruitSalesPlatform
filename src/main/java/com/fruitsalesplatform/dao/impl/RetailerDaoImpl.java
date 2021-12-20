@@ -1,6 +1,7 @@
 package com.fruitsalesplatform.dao.impl;
 
 import com.fruitsalesplatform.dao.RetailerDao;
+import com.fruitsalesplatform.entity.ErrorMsg;
 import com.fruitsalesplatform.entity.Retailer;
 import junit.framework.Test;
 import org.apache.log4j.Logger;
@@ -8,14 +9,22 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
 @Repository           //为了在包扫描的时候这个Dao被扫描到
-public class RetailerDaoImpl extends BaseDaoImpl<Retailer> implements RetailerDao {
+public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String> implements RetailerDao {
     public static final String OK = "OK";
     public static final int RETAILER_PATH_INSERT = 0x1;
     public static final int RETAILER_PATH_UPDATE = 0x2;
     public static final int RETAILER_PATH_DELETE = 0x3;
+    public static final int RETAILER_PATH_INSERT_PREFIX = 0x4;
+    public static final int RETAILER_PATH_UPDATE_PREFIX = 0x5;
+    public static final int RETAILER_PATH_DELETE_PREFIX = 0x6;
     private final Logger mLogRetailerDaoImpl  = Logger.getLogger(Test.class);
-    private String mMsg = OK;
+    private String mMsg;
 
     public RetailerDaoImpl() {
         //设置命名空间
@@ -29,8 +38,54 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer> implements RetailerDa
 
     }
 
+    private void pathProcessByPrefix(int nSelectValue, Retailer[] retailers) {
+        List<Retailer> lstRetailer = new ArrayList<>(retailers.length);
+        lstRetailer.addAll(Arrays.asList(retailers));
+        mMsg = OK;
+        try {
+             switch(nSelectValue) {
+                 case RETAILER_PATH_INSERT_PREFIX:
+                     this.getSqlSession().insert(this.getStrNs() + ".insertPathByPrefix", lstRetailer);
+                     break;
+                 case RETAILER_PATH_UPDATE_PREFIX:
+                     this.getSqlSession().update(this.getStrNs() + ".updatePathByPrefix", lstRetailer);
+                     break;
+                 case RETAILER_PATH_DELETE_PREFIX:
+                     this.getSqlSession().delete(this.getStrNs() + ".deletePathByPrefix", lstRetailer);
+                     break;
+                 default:
+                     break;
+             }
+        } catch (Exception e) {
+            getExceptionMsg(nSelectValue, e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+    }
+
+    private void getExceptionMsg(int nSelectValue, Exception e) {
+        mMsg = e.getMessage();
+        mLogRetailerDaoImpl.info("执行插入异常:".concat(mMsg));
+        switch (nSelectValue) {
+            case RETAILER_PATH_INSERT:
+            case RETAILER_PATH_INSERT_PREFIX:
+                mMsg = ErrorMsg.PATH_INSERT_MSG;
+                break;
+            case RETAILER_PATH_UPDATE:
+            case RETAILER_PATH_UPDATE_PREFIX:
+                mMsg = ErrorMsg.PATH_UPDATE_MSG;
+                break;
+            case RETAILER_PATH_DELETE:
+            case RETAILER_PATH_DELETE_PREFIX:
+                 mMsg = ErrorMsg.PATH_DELETE_MSG;
+                break;
+            default:
+                break;
+        }
+    }
+
     private void pathProcess(int nSelectValue, Retailer[] retailers) {
         Retailer retailer;
+        mMsg = OK;
         try {
             for (Retailer value : retailers) {
                 retailer = value;
@@ -41,14 +96,16 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer> implements RetailerDa
                     case RETAILER_PATH_UPDATE:
                         this.getSqlSession().update(this.getStrNs() + ".update", retailer);
                         break;
+                    case RETAILER_PATH_DELETE:
+                        this.getSqlSession().delete(this.getStrNs() + ".delete", retailer);
+                        break;
                     default:
                         break;
                 }
 
             }
         } catch (Exception e) {
-            mMsg = e.getMessage();
-            mLogRetailerDaoImpl.info("执行插入异常:".concat(mMsg));
+            getExceptionMsg(nSelectValue, e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
     }
@@ -64,7 +121,7 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer> implements RetailerDa
     @Transactional(rollbackFor=Exception.class)
     public String updateMoreRetailer(Retailer[] retailers) {
         mLogRetailerDaoImpl.info("开始执行:updateMoreRetailer:");
-        pathProcess(RETAILER_PATH_UPDATE, retailers);
+        pathProcessByPrefix(RETAILER_PATH_UPDATE_PREFIX, retailers);
         mLogRetailerDaoImpl.info("执行结束:updateMoreRetailer:");
         return mMsg;
     }

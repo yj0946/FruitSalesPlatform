@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public abstract class BaseDaoImpl<T> extends SqlSessionDaoSupport implements BaseDao<T> {
+public abstract class BaseDaoImpl<T,V> extends SqlSessionDaoSupport implements BaseDao<T,V> {
        public static final String BASE_DAO_OK = "OK";
        private Logger mLogBaseDaoImpl  = Logger.getLogger(Test.class);
        String mReturnMsg;
@@ -72,16 +72,28 @@ public abstract class BaseDaoImpl<T> extends SqlSessionDaoSupport implements Bas
         }
 
         @Override
-        public void deleteRecord(Serializable id) {
+        public String deleteRecord(Serializable id) {
             mStrFullName = strNs.concat(".deleteById");
             mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
-            this.getSqlSession().delete(mStrFullName, id);
+            mReturnMsg = BASE_DAO_OK;
+            try {
+                this.getSqlSession().delete(mStrFullName, id);
+            } catch (Exception e) {
+                mReturnMsg = e.getMessage();
+            }
+            return mReturnMsg;
         }
 
         @Override
-        public void deleteRecord(Serializable[] ids) {
+        public String deleteRecordMore(List<V> ids) {
             mStrFullName = strNs.concat(".delete");
             mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
-            this.getSqlSession().delete(mStrFullName, ids);
+            mReturnMsg = BASE_DAO_OK;
+            try {
+                this.getSqlSession().delete(mStrFullName, ids);
+            } catch (Exception e) {
+                mReturnMsg = e.getMessage();
+            }
+            return mReturnMsg;
         }
 }

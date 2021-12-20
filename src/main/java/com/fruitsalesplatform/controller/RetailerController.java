@@ -1,12 +1,12 @@
 package com.fruitsalesplatform.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.fruitsalesplatform.entity.Retailer;
-import com.fruitsalesplatform.entity.User;
+import com.fruitsalesplatform.entity.RetailerId;
 import com.fruitsalesplatform.service.RetailerService;
-import com.fruitsalesplatform.viewResult.ViewResult;
+import com.fruitsalesplatform.viewResult.AppResult;
+import com.fruitsalesplatform.viewResult.AppResultBuilder;
+import com.fruitsalesplatform.viewResult.ResultCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -19,44 +19,69 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
 @Api(value = "零售商接口", tags = "零售商管理相关的接口")
-public class RetailerController extends BaseController{
+public class RetailerController<T> extends BaseController{
     public static final String OK = "OK";
+    public static final int ONE = 1;
+    public String strMsg;
     @Resource
     RetailerService retailerService;
 
     @ApiOperation(value = "POST方法查询零售商Id", notes = "POST方法编辑零售商Id")
     @RequestMapping(value = "/retailer/deleteByRetailerById", method = {RequestMethod.POST})
-    public String deleteRetailer(@RequestBody Retailer retailer) {
-        return "";
+    public @ResponseBody AppResult<T> deleteRetailer(@RequestBody RetailerId[] retailerIds) {
+        if (retailerIds == null || retailerIds.length == 0) {
+             return AppResultBuilder.failure(ResultCode.PARAM_IS_BLANK);
+        }
+        if (retailerIds.length == ONE) {
+            strMsg = retailerService.deleteRecord(retailerIds[0].getId());
+        } else {
+            List<String> lstId = new ArrayList<>();
+            for (int i = 0; i < retailerIds.length; i++) {
+                lstId.add(retailerIds[i].getId());
+            }
+            strMsg = retailerService.deleteRecordMore(lstId);
+        }
+        return getRetailerAppResult(strMsg);
+    }
+
+    private AppResult<T> getRetailerAppResult(String strMsg) {
+        if (strMsg.equals(OK)) {
+            return AppResultBuilder.successNoData(ResultCode.SUCCESS);
+        }
+        return (AppResult<T>) AppResultBuilder.failureMsg(strMsg, ResultCode.FAILURE);
     }
 
     @ApiOperation(value = "POST方法查询零售商Id", notes = "POST方法编辑零售商Id")
     @RequestMapping(value = "/retailer/queryRetailerById", method = {RequestMethod.POST})
-    public @ResponseBody Retailer queryRetailerById(@RequestBody String strJson) {
+    public @ResponseBody AppResult<Retailer> queryRetailerById(@RequestBody String strJson) {
         String id = JSONObject.parseObject(strJson).getString("id");
         //@ResponseBody将retailer转换成JSON格式输出。
-        return retailerService.getOneRecord(id);
+        Retailer retailer = retailerService.getOneRecord(id);
+        return AppResultBuilder.success(retailer, ResultCode.SUCCESS);
+    }
+
+    @ApiOperation(value = "POST方法批量编辑零售商", notes = "POST方法批量编辑零售商")
+    @RequestMapping(value = "/retailer/updateMoreRetailer", method = {RequestMethod.POST})
+    public @ResponseBody AppResult<T> updateRetailer(@RequestBody Retailer[] retailers) {
+        strMsg = retailerService.updateMoreRetailer(retailers);
+        return getRetailerAppResult(strMsg);
     }
 
     @ApiOperation(value = "POST方法编辑零售商", notes = "POST方法编辑零售商")
     @RequestMapping(value = "/retailer/updateRetailer", method = {RequestMethod.POST})
-    public @ResponseBody Retailer updateRetailer(@RequestBody Retailer retailer) {
+    public @ResponseBody AppResult<T> updateRetailer(@RequestBody Retailer retailer) {
         String strMsg = retailerService.updateRecord(retailer);
-        if (strMsg.equals(OK)) {
-            return null;
-        }
-        return retailer;
+        return getRetailerAppResult(strMsg);
     }
 
     @ApiOperation(value = "POST方法编辑零售商(返回字符串)", notes = "POST方法编辑零售商(返回字符串)")
     @RequestMapping(value = "/retailer/updateRetailerModel", method = {RequestMethod.POST})
     public String updateRetailer(Model model, Retailer retailer) {
-        String strMsg = retailerService.updateRecord(retailer);
+        strMsg = retailerService.updateRecord(retailer);
         if (strMsg.equals(OK)) {
             return null;
         }
@@ -72,35 +97,14 @@ public class RetailerController extends BaseController{
     //说明是什么方法(可以理解为方法注释)
     @ApiOperation(value = "POST方法插入零售商", notes = "POST方法插入零售商")
     @RequestMapping(value = "/retailer/insertRetailer", method = {RequestMethod.POST})
-    @ResponseBody
-    public String insertRetailer(@RequestBody Retailer[] retailerPost)
+    public @ResponseBody AppResult<T> insertRetailer(@RequestBody Retailer[] retailerPost)
     {
         if (retailerPost == null || retailerPost.length == 0) {
              return null;
         }
-//        SimpleDateFormat sdf = new SimpleDateFormat();// 格式化时间
-//        sdf.applyPattern("yyyy-MM-dd HH:mm:ss");// a为am/pm的标记
-//        Date date = new Date();// 获取当前时间
-//        Retailer[] retailerPost = new Retailer[10];
-//        Retailer retailer;
-//        for (int i = 0; i < 10; i++) {
-//            retailer = new Retailer();
-//            retailer.setRetailerId(UUID.randomUUID().toString());
-//            retailer.setAddress("广东省东莞市大朗镇黎贝岭村新围仔402信澜居1518");
-//            retailer.setName("周超");
-//            retailer.setStatus(1);
-//            retailer.setTelephone("13398970456");
-//            if (i == 5) {
-//                retailer.setCreateTime("123456");
-//            } else {
-//                retailer.setCreateTime(sdf.format(date));
-//            }
-//            retailerPost[i] = retailer;
-//        }
-        //String strJson = JSONObject.toJSONString(retailerPost);
-        String strMsg = "ok";
+
         strMsg = retailerService.insertMoreRecord(retailerPost);
-        return strMsg;
+        return getRetailerAppResult(strMsg);
     }
 
     @ApiImplicitParams({
@@ -110,16 +114,16 @@ public class RetailerController extends BaseController{
     //说明是什么方法(可以理解为方法注释)
     @ApiOperation(value = "POST方法查询零售商", notes = "POST方法查询零售商")
     @RequestMapping(value = "/retailer/listPost", method = {RequestMethod.POST})
-    @ResponseBody
-    public String queryRetailer(@RequestBody Retailer retailerPost, String startTime,
+    public @ResponseBody AppResult<List<Retailer>> queryRetailer(@RequestBody Retailer retailerPost, String startTime,
                                String endTime)
     {
         Map<String, Object> map = getStringObjectMap(retailerPost, startTime, endTime);
 
         List<Retailer> lstRetailer = retailerService.getMoreRecord(map);
-        ViewResult vPostRetailer = ViewResult.SUCCESS(lstRetailer);
-        String strJson = JSONObject.toJSONString(vPostRetailer, SerializerFeature.WriteMapNullValue);
-        return strJson;
+        if (lstRetailer == null || lstRetailer.size() == 0) {
+            return AppResultBuilder.failure(ResultCode.FAILURE);
+        }
+        return AppResultBuilder.success(lstRetailer, ResultCode.SUCCESS);
     }
 
     private Map<String, Object> getStringObjectMap(@RequestBody Retailer retailerPost, String startTime, String endTime) {
@@ -175,7 +179,6 @@ public class RetailerController extends BaseController{
         map.put("mAddress", checkStringIsEmpty(retailer.getAddress()));
         map.put("mStatus", retailer.getStatus() == -1 ? null : retailer.getStatus());
         map.put("mTelephone", checkStringIsEmpty(retailer.getTelephone()));
-        //map.put("mCreateTime", checkStringIsEmpty(retailer.getCreateTime()));
 
         map.put("mStartPage", retailer.getStartPage());
         map.put("mPageSize", retailer.getPageSize());
