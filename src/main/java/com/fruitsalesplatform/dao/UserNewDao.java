@@ -1,8 +1,8 @@
 package com.fruitsalesplatform.dao;
 
 import com.fruitsalesplatform.entity.User;
-import org.apache.ibatis.jdbc.Null;
+import com.fruitsalesplatform.example.UserExample;
 
-public interface UserNewDao extends BaseDao<User, String> {
+public interface UserNewDao extends BaseDao<User, String, UserExample> {
 
 }

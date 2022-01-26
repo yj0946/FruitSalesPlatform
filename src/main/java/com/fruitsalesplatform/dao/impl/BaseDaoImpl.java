@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public abstract class BaseDaoImpl<T,V> extends SqlSessionDaoSupport implements BaseDao<T,V> {
+public abstract class BaseDaoImpl<T,V,K> extends SqlSessionDaoSupport implements BaseDao<T,V,K> {
        public static final String BASE_DAO_OK = "OK";
        private Logger mLogBaseDaoImpl  = Logger.getLogger(Test.class);
        String mReturnMsg;

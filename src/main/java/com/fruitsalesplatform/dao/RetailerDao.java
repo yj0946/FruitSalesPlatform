@@ -1,10 +1,9 @@
 package com.fruitsalesplatform.dao;
 
 import com.fruitsalesplatform.entity.Retailer;
+import com.fruitsalesplatform.example.RetailerExample;
 
-import java.util.Map;
-
-public interface RetailerDao extends BaseDao<Retailer, String>{
+public interface RetailerDao extends BaseDao<Retailer, String, RetailerExample>{
     //添加新的方法定义
     public int count();    //根据条件统计结果集树林
 

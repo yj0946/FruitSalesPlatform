@@ -1,30 +1,42 @@
 package com.fruitsalesplatform.dao.impl;
 
+import com.fruitsalesplatform.Tools.Constant;
 import com.fruitsalesplatform.dao.RetailerDao;
+import com.fruitsalesplatform.dao.RetailerMapper;
 import com.fruitsalesplatform.entity.ErrorMsg;
 import com.fruitsalesplatform.entity.Retailer;
+import com.fruitsalesplatform.entity.User;
+import com.fruitsalesplatform.example.RetailerExample;
+import com.fruitsalesplatform.example.RetailerExample;
 import junit.framework.Test;
+import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 @Repository           //为了在包扫描的时候这个Dao被扫描到
-public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String> implements RetailerDao {
-    public static final String OK = "OK";
+public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String, RetailerExample> implements RetailerDao {
     public static final int RETAILER_PATH_INSERT = 0x1;
     public static final int RETAILER_PATH_UPDATE = 0x2;
     public static final int RETAILER_PATH_DELETE = 0x3;
     public static final int RETAILER_PATH_INSERT_PREFIX = 0x4;
     public static final int RETAILER_PATH_UPDATE_PREFIX = 0x5;
     public static final int RETAILER_PATH_DELETE_PREFIX = 0x6;
+
+    public static final int RETAILER_MAPPER_COUNT_BY_EXAMPLE = 0x7;
+    public static final int RETAILER_MAPPER_DELETE_BY_EXAMPLE = 0x8;
     private final Logger mLogRetailerDaoImpl  = Logger.getLogger(Test.class);
     private String mMsg;
+
+    @Resource
+    private RetailerMapper mRetailerMapper;
 
     public RetailerDaoImpl() {
         //设置命名空间
@@ -41,7 +53,7 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String> implements Re
     private void pathProcessByPrefix(int nSelectValue, Retailer[] retailers) {
         List<Retailer> lstRetailer = new ArrayList<>(retailers.length);
         lstRetailer.addAll(Arrays.asList(retailers));
-        mMsg = OK;
+        mMsg = Constant.OK;
         try {
              switch(nSelectValue) {
                  case RETAILER_PATH_INSERT_PREFIX:
@@ -85,7 +97,7 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String> implements Re
 
     private void pathProcess(int nSelectValue, Retailer[] retailers) {
         Retailer retailer;
-        mMsg = OK;
+        mMsg = Constant.OK;
         try {
             for (Retailer value : retailers) {
                 retailer = value;
@@ -125,4 +137,89 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String> implements Re
         mLogRetailerDaoImpl.info("执行结束:updateMoreRetailer:");
         return mMsg;
     }
+
+
+    @Transactional(rollbackFor=Exception.class)
+    @Override
+    public long countByExample(RetailerExample retailerExample) {
+        mMsg = Constant.OK;
+        long nCount = 0;
+        try {
+            if (retailerExample == null) {
+                retailerExample = new RetailerExample();
+            }
+            RetailerExample.Criteria criteriaCount = retailerExample.createCriteria();
+            nCount = mRetailerMapper.countByExample(retailerExample);
+        } catch (Exception e) {
+            mMsg = e.getMessage();
+            mLogRetailerDaoImpl.info("执行统计异常:".concat(mMsg));
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return nCount;
+    }
+
+    @Override
+    public int deleteByExample(RetailerExample retailerExample) {
+        mMsg = Constant.OK;
+        int nDelete = 0;
+        try {
+            if (retailerExample == null) {
+                retailerExample = new RetailerExample();
+            }
+            RetailerExample.Criteria criteriaDelete = retailerExample.createCriteria();
+            criteriaDelete.andNameEqualTo("jack");
+            nDelete = mRetailerMapper.deleteByExample(retailerExample);
+        } catch (Exception e) {
+            mMsg = e.getMessage();
+            mLogRetailerDaoImpl.info("执行统计异常:".concat(mMsg));
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return nDelete;
+    }
+
+    @Override
+    public int deleteByPrimaryKey(Integer id){
+        return 0;
+    }
+
+    @Override
+    public int insert(Retailer record) {
+        return 0;
+    }
+
+    @Override
+    public int insertSelective(Retailer record) {
+        return 0;
+    }
+
+    @Override
+    public List<Retailer> selectByExample(RetailerExample example) {
+        return null;
+    }
+
+    @Override
+    public Retailer selectByPrimaryKey(Integer id) {
+        return null;
+    }
+
+    @Override
+    public int updateByExampleSelective(@Param("record") Retailer record, @Param("example") RetailerExample example) {
+        return 0;
+    }
+
+    @Override
+    public int updateByExample(@Param("record") Retailer record, @Param("example") RetailerExample example) {
+        return 0;
+    }
+
+    @Override
+    public int updateByPrimaryKeySelective(Retailer record) {
+        return 0;
+    }
+
+    @Override
+    public int updateByPrimaryKey(Retailer record) {
+        return 0;
+    }
+
 }
