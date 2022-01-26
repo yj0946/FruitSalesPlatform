@@ -10,4 +10,6 @@ public interface RetailerDao extends BaseDao<Retailer, String, RetailerExample>{
     public String insertMoreRecord(Retailer[] retailers);
 
     public String updateMoreRetailer(Retailer[] retailers);
+
+    public long countByExampleName(RetailerExample retailerExample);
 }

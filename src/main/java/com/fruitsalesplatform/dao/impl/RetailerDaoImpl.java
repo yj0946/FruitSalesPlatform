@@ -138,6 +138,25 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String, RetailerExamp
         return mMsg;
     }
 
+    @Transactional(rollbackFor=Exception.class)
+    @Override
+    public long countByExampleName(RetailerExample retailerExample) {
+        mMsg = Constant.OK;
+        long nCount = 0;
+        try {
+            if (retailerExample == null) {
+                retailerExample = new RetailerExample();
+            }
+            RetailerExample.Criteria criteriaCount = retailerExample.createCriteria();
+            criteriaCount.andNameEqualTo("jack");
+            nCount = mRetailerMapper.countByExample(retailerExample);
+        } catch (Exception e) {
+            mMsg = e.getMessage();
+            mLogRetailerDaoImpl.info("执行统计异常:".concat(mMsg));
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return nCount;
+    }
 
     @Transactional(rollbackFor=Exception.class)
     @Override
@@ -158,6 +177,7 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String, RetailerExamp
         return nCount;
     }
 
+    @Transactional(rollbackFor=Exception.class)
     @Override
     public int deleteByExample(RetailerExample retailerExample) {
         mMsg = Constant.OK;
@@ -171,35 +191,90 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String, RetailerExamp
             nDelete = mRetailerMapper.deleteByExample(retailerExample);
         } catch (Exception e) {
             mMsg = e.getMessage();
-            mLogRetailerDaoImpl.info("执行统计异常:".concat(mMsg));
+            mLogRetailerDaoImpl.info("执行删除异常:".concat(mMsg));
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return nDelete;
     }
 
+    @Transactional(rollbackFor=Exception.class)
     @Override
     public int deleteByPrimaryKey(Integer id){
-        return 0;
+        mMsg = Constant.OK;
+        int nDelete = 0;
+        try {
+            nDelete = mRetailerMapper.deleteByPrimaryKey(String.valueOf(id));
+        } catch (Exception e) {
+            mMsg = e.getMessage();
+            mLogRetailerDaoImpl.info("执行删除按主键id异常:".concat(mMsg));
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return nDelete;
     }
 
+    @Transactional(rollbackFor=Exception.class)
     @Override
     public int insert(Retailer record) {
-        return 0;
+        mMsg = Constant.OK;
+        int nInsert = 0;
+        try {
+            nInsert = mRetailerMapper.insert(record);
+        } catch (Exception e) {
+            mMsg = e.getMessage();
+            mLogRetailerDaoImpl.info("执行插入统计异常:".concat(mMsg));
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return nInsert;
     }
 
     @Override
     public int insertSelective(Retailer record) {
-        return 0;
+        mMsg = Constant.OK;
+        int nInsert = 0;
+        try {
+            nInsert = mRetailerMapper.insertSelective(record);
+        } catch (Exception e) {
+            mMsg = e.getMessage();
+            mLogRetailerDaoImpl.info("执行插入选择统计异常:".concat(mMsg));
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return nInsert;
     }
 
     @Override
-    public List<Retailer> selectByExample(RetailerExample example) {
-        return null;
+    public List<Retailer> selectByExample(RetailerExample retailerExample) {
+        mMsg = Constant.OK;
+
+        List<Retailer> lstRetailer = null;
+        try {
+            if (retailerExample == null) {
+                retailerExample = new RetailerExample();
+            }
+            RetailerExample.Criteria criteria = retailerExample.createCriteria();
+            criteria.andNameEqualTo("jack");
+            criteria.andNameIsNotNull();
+            lstRetailer = mRetailerMapper.selectByExample(retailerExample);
+        } catch (Exception e) {
+            mMsg = e.getMessage();
+            mLogRetailerDaoImpl.info("执行插入选择统计异常:".concat(mMsg));
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return lstRetailer;
     }
 
     @Override
     public Retailer selectByPrimaryKey(Integer id) {
-        return null;
+        mMsg = Constant.OK;
+
+        Retailer retailer = null;
+        try {
+            retailer = mRetailerMapper.selectByPrimaryKey(String.valueOf(id));
+        } catch (Exception e) {
+            mMsg = e.getMessage();
+            mLogRetailerDaoImpl.info("执行插入选择统计异常:".concat(mMsg));
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return retailer;
     }
 
     @Override
