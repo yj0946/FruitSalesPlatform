@@ -20,7 +20,7 @@
 
     <mappers>
         <mapper resource="mapper/UserDao.xml"/>
-        <mapper resource="mapper/UserMapper.xml"/>
+        <mapper resource="mapper/UserNewDaoMapper.xml"/>
         <mapper resource="mapper/RetailerMapper.xml"/>
     </mappers>
 </configuration>

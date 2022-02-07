@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface RetailerMapper {
+public interface GenRetailerMapper {
     long countByExample(RetailerExample example);
 
     int deleteByExample(RetailerExample example);

@@ -27,9 +27,21 @@
     <slf4j.version>1.7.18</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
     <swagger.version>2.9.2</swagger.version>
+    <aspect.version>1.5.3</aspect.version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.struts</groupId>
+      <artifactId>struts2-core</artifactId>
+      <version>2.5.22</version>
+    </dependency>
+
+    <dependency>
+      <groupId>aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>${aspect.version}</version>
+    </dependency>
     <!-- 引入redis -->
     <!-- redis cache related.....start -->
     <dependency>

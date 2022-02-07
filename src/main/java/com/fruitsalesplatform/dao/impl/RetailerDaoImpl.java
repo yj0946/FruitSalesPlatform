@@ -2,7 +2,6 @@ package com.fruitsalesplatform.dao.impl;
 
 import com.fruitsalesplatform.Tools.Constant;
 import com.fruitsalesplatform.dao.RetailerDao;
-import com.fruitsalesplatform.dao.RetailerMapper;
 import com.fruitsalesplatform.entity.ErrorMsg;
 import com.fruitsalesplatform.entity.Retailer;
 import com.fruitsalesplatform.entity.User;
@@ -22,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Repository           //为了在包扫描的时候这个Dao被扫描到
-public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String, RetailerExample> implements RetailerDao {
+public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String> implements RetailerDao {
     public static final int RETAILER_PATH_INSERT = 0x1;
     public static final int RETAILER_PATH_UPDATE = 0x2;
     public static final int RETAILER_PATH_DELETE = 0x3;
@@ -35,8 +34,6 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String, RetailerExamp
     private final Logger mLogRetailerDaoImpl  = Logger.getLogger(Test.class);
     private String mMsg;
 
-    @Resource
-    private RetailerMapper mRetailerMapper;
 
     public RetailerDaoImpl() {
         //设置命名空间
@@ -136,165 +133,6 @@ public class RetailerDaoImpl extends BaseDaoImpl<Retailer, String, RetailerExamp
         pathProcessByPrefix(RETAILER_PATH_UPDATE_PREFIX, retailers);
         mLogRetailerDaoImpl.info("执行结束:updateMoreRetailer:");
         return mMsg;
-    }
-
-    @Transactional(rollbackFor=Exception.class)
-    @Override
-    public long countByExampleName(RetailerExample retailerExample) {
-        mMsg = Constant.OK;
-        long nCount = 0;
-        try {
-            if (retailerExample == null) {
-                retailerExample = new RetailerExample();
-            }
-            RetailerExample.Criteria criteriaCount = retailerExample.createCriteria();
-            criteriaCount.andNameEqualTo("jack");
-            nCount = mRetailerMapper.countByExample(retailerExample);
-        } catch (Exception e) {
-            mMsg = e.getMessage();
-            mLogRetailerDaoImpl.info("执行统计异常:".concat(mMsg));
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return nCount;
-    }
-
-    @Transactional(rollbackFor=Exception.class)
-    @Override
-    public long countByExample(RetailerExample retailerExample) {
-        mMsg = Constant.OK;
-        long nCount = 0;
-        try {
-            if (retailerExample == null) {
-                retailerExample = new RetailerExample();
-            }
-            RetailerExample.Criteria criteriaCount = retailerExample.createCriteria();
-            nCount = mRetailerMapper.countByExample(retailerExample);
-        } catch (Exception e) {
-            mMsg = e.getMessage();
-            mLogRetailerDaoImpl.info("执行统计异常:".concat(mMsg));
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return nCount;
-    }
-
-    @Transactional(rollbackFor=Exception.class)
-    @Override
-    public int deleteByExample(RetailerExample retailerExample) {
-        mMsg = Constant.OK;
-        int nDelete = 0;
-        try {
-            if (retailerExample == null) {
-                retailerExample = new RetailerExample();
-            }
-            RetailerExample.Criteria criteriaDelete = retailerExample.createCriteria();
-            criteriaDelete.andNameEqualTo("jack");
-            nDelete = mRetailerMapper.deleteByExample(retailerExample);
-        } catch (Exception e) {
-            mMsg = e.getMessage();
-            mLogRetailerDaoImpl.info("执行删除异常:".concat(mMsg));
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return nDelete;
-    }
-
-    @Transactional(rollbackFor=Exception.class)
-    @Override
-    public int deleteByPrimaryKey(Integer id){
-        mMsg = Constant.OK;
-        int nDelete = 0;
-        try {
-            nDelete = mRetailerMapper.deleteByPrimaryKey(String.valueOf(id));
-        } catch (Exception e) {
-            mMsg = e.getMessage();
-            mLogRetailerDaoImpl.info("执行删除按主键id异常:".concat(mMsg));
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return nDelete;
-    }
-
-    @Transactional(rollbackFor=Exception.class)
-    @Override
-    public int insert(Retailer record) {
-        mMsg = Constant.OK;
-        int nInsert = 0;
-        try {
-            nInsert = mRetailerMapper.insert(record);
-        } catch (Exception e) {
-            mMsg = e.getMessage();
-            mLogRetailerDaoImpl.info("执行插入统计异常:".concat(mMsg));
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return nInsert;
-    }
-
-    @Override
-    public int insertSelective(Retailer record) {
-        mMsg = Constant.OK;
-        int nInsert = 0;
-        try {
-            nInsert = mRetailerMapper.insertSelective(record);
-        } catch (Exception e) {
-            mMsg = e.getMessage();
-            mLogRetailerDaoImpl.info("执行插入选择统计异常:".concat(mMsg));
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return nInsert;
-    }
-
-    @Override
-    public List<Retailer> selectByExample(RetailerExample retailerExample) {
-        mMsg = Constant.OK;
-
-        List<Retailer> lstRetailer = null;
-        try {
-            if (retailerExample == null) {
-                retailerExample = new RetailerExample();
-            }
-            RetailerExample.Criteria criteria = retailerExample.createCriteria();
-            criteria.andNameEqualTo("jack");
-            criteria.andNameIsNotNull();
-            lstRetailer = mRetailerMapper.selectByExample(retailerExample);
-        } catch (Exception e) {
-            mMsg = e.getMessage();
-            mLogRetailerDaoImpl.info("执行插入选择统计异常:".concat(mMsg));
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return lstRetailer;
-    }
-
-    @Override
-    public Retailer selectByPrimaryKey(Integer id) {
-        mMsg = Constant.OK;
-
-        Retailer retailer = null;
-        try {
-            retailer = mRetailerMapper.selectByPrimaryKey(String.valueOf(id));
-        } catch (Exception e) {
-            mMsg = e.getMessage();
-            mLogRetailerDaoImpl.info("执行插入选择统计异常:".concat(mMsg));
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        return retailer;
-    }
-
-    @Override
-    public int updateByExampleSelective(@Param("record") Retailer record, @Param("example") RetailerExample example) {
-        return 0;
-    }
-
-    @Override
-    public int updateByExample(@Param("record") Retailer record, @Param("example") RetailerExample example) {
-        return 0;
-    }
-
-    @Override
-    public int updateByPrimaryKeySelective(Retailer record) {
-        return 0;
-    }
-
-    @Override
-    public int updateByPrimaryKey(Retailer record) {
-        return 0;
     }
 
 }

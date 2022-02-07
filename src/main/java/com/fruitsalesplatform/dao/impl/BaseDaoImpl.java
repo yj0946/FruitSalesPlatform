@@ -1,5 +1,6 @@
 package com.fruitsalesplatform.dao.impl;
 
+import com.fruitsalesplatform.annotation.LogAnno;
 import com.fruitsalesplatform.dao.BaseDao;
 import junit.framework.Test;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -14,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public abstract class BaseDaoImpl<T,V,K> extends SqlSessionDaoSupport implements BaseDao<T,V,K> {
+public abstract class BaseDaoImpl<T,V> extends SqlSessionDaoSupport implements BaseDao<T,V> {
        public static final String BASE_DAO_OK = "OK";
-       private Logger mLogBaseDaoImpl  = Logger.getLogger(Test.class);
+       //private Logger mLogBaseDaoImpl  = Logger.getLogger(Test.class);
        String mReturnMsg;
        String mStrFullName;
        @Autowired
@@ -35,32 +36,36 @@ public abstract class BaseDaoImpl<T,V,K> extends SqlSessionDaoSupport implements
 
         private String strNs;          //命名空间
 
+        @LogAnno(operateType = "获取一条记录")
         @Override
         public T getOneRecord(Serializable id) {
             mStrFullName = strNs.concat(".get");
-            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            //mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
             return this.getSqlSession().selectOne(mStrFullName, id);
         }
 
+        @LogAnno(operateType = "获取多条记录")
         @Override
         public List<T> getMoreRecord(Map map) {
             mStrFullName = strNs.concat(".find");
-            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            //mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
             List<T> oList = this.getSqlSession().selectList(mStrFullName, map);
             return oList;
         }
 
+        @LogAnno(operateType = "插入一条记录")
         @Override
         public void insertRecord(T entity) {
             mStrFullName = strNs.concat(".insert");
-            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            //mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
             this.getSqlSession().insert(mStrFullName, entity);
         }
 
+        @LogAnno(operateType = "更新一条记录")
         @Override
         public String updateRecord(T entity) {
             mStrFullName = strNs.concat(".update");
-            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            //mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
             mReturnMsg = BASE_DAO_OK;
             try {
                 this.getSqlSession().update(mStrFullName, entity);
@@ -71,10 +76,11 @@ public abstract class BaseDaoImpl<T,V,K> extends SqlSessionDaoSupport implements
             return mReturnMsg;
         }
 
+        @LogAnno(operateType = "删除一条记录")
         @Override
         public String deleteRecord(Serializable id) {
             mStrFullName = strNs.concat(".deleteById");
-            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            //.info("Start To Execute: ".concat(mStrFullName));
             mReturnMsg = BASE_DAO_OK;
             try {
                 this.getSqlSession().delete(mStrFullName, id);
@@ -84,10 +90,11 @@ public abstract class BaseDaoImpl<T,V,K> extends SqlSessionDaoSupport implements
             return mReturnMsg;
         }
 
+        @LogAnno(operateType = "删除多条记录")
         @Override
         public String deleteRecordMore(List<V> ids) {
             mStrFullName = strNs.concat(".delete");
-            mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
+            //mLogBaseDaoImpl.info("Start To Execute: ".concat(mStrFullName));
             mReturnMsg = BASE_DAO_OK;
             try {
                 this.getSqlSession().delete(mStrFullName, ids);
