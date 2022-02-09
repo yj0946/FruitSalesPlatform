@@ -36,7 +36,6 @@ public abstract class BaseDaoImpl<T,V> extends SqlSessionDaoSupport implements B
 
         private String strNs;          //命名空间
 
-        @LogAnno(operateType = "获取一条记录")
         @Override
         public T getOneRecord(Serializable id) {
             mStrFullName = strNs.concat(".get");
@@ -44,7 +43,6 @@ public abstract class BaseDaoImpl<T,V> extends SqlSessionDaoSupport implements B
             return this.getSqlSession().selectOne(mStrFullName, id);
         }
 
-        @LogAnno(operateType = "获取多条记录")
         @Override
         public List<T> getMoreRecord(Map map) {
             mStrFullName = strNs.concat(".find");
@@ -53,7 +51,6 @@ public abstract class BaseDaoImpl<T,V> extends SqlSessionDaoSupport implements B
             return oList;
         }
 
-        @LogAnno(operateType = "插入一条记录")
         @Override
         public void insertRecord(T entity) {
             mStrFullName = strNs.concat(".insert");
@@ -61,7 +58,6 @@ public abstract class BaseDaoImpl<T,V> extends SqlSessionDaoSupport implements B
             this.getSqlSession().insert(mStrFullName, entity);
         }
 
-        @LogAnno(operateType = "更新一条记录")
         @Override
         public String updateRecord(T entity) {
             mStrFullName = strNs.concat(".update");
@@ -76,7 +72,6 @@ public abstract class BaseDaoImpl<T,V> extends SqlSessionDaoSupport implements B
             return mReturnMsg;
         }
 
-        @LogAnno(operateType = "删除一条记录")
         @Override
         public String deleteRecord(Serializable id) {
             mStrFullName = strNs.concat(".deleteById");
@@ -90,7 +85,6 @@ public abstract class BaseDaoImpl<T,V> extends SqlSessionDaoSupport implements B
             return mReturnMsg;
         }
 
-        @LogAnno(operateType = "删除多条记录")
         @Override
         public String deleteRecordMore(List<V> ids) {
             mStrFullName = strNs.concat(".delete");

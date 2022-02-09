@@ -132,4 +132,5 @@
         <bean id="keyGenerator" class="com.fruitsalesplatform.config.KeyGenerator"/>
 
         <cache:annotation-driven cache-manager="redisCacheManager" key-generator="keyGenerator"/>
+
 </beans>

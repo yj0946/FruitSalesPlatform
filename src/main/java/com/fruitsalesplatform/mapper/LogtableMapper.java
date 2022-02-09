@@ -1,4 +1,4 @@
-package com.fruitsalesplatform.dao;
+package com.fruitsalesplatform.mapper;
 
 import com.fruitsalesplatform.entity.Logtable;
 import com.fruitsalesplatform.example.LogtableExample;

@@ -1,11 +1,16 @@
 package com.fruitsalesplatform.interceptor;
 
+import com.alibaba.fastjson.JSON;
+import com.fruitsalesplatform.entity.User;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
 
 public class LoginInterceptor implements HandlerInterceptor {
     @Override
@@ -36,6 +41,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 //            return true;
 //        }
 //        return false;
+
         showCookies(httpServletRequest, httpServletResponse);
         return true;
     }
@@ -51,17 +57,17 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     //读取cookie数组，之后迭代出各个cookie
-    public void showCookies(HttpServletRequest request, HttpServletResponse response){
+    public void showCookies(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         Cookie[] cookies = request.getCookies();//根据请求数据，找到cookie数组
 
         if (null==cookies) {//如果没有cookie数组
             System.out.println("没有cookie");
-            addCookie(response);
+            addCookie(request, response);
         } else {
             boolean isExist = false;
             for(Cookie cookie : cookies){
                 String strCookieName = cookie.getName();
-                if (strCookieName.equals("name_test")) {
+                if (strCookieName.equals("userinfo")) {
                     isExist = true;
                     System.out.println("cookieName:"+cookie.getName()+",cookieValue:"+ cookie.getValue());
                     break;
@@ -69,18 +75,30 @@ public class LoginInterceptor implements HandlerInterceptor {
             }
 
             if (!isExist) {
-                addCookie(response);
+                addCookie(request, response);
             }
 
         }
     }
 
     //创建cookie，并将新cookie添加到“响应对象”response中。
-    public void addCookie(HttpServletResponse response){
-        Cookie cookie = new Cookie("name_test","value_test");//创建新cookie
-        cookie.setMaxAge(5 * 60);// 设置存在时间为5分钟
-        cookie.setPath("/");//设置作用域
-        response.addCookie(cookie);//将cookie添加到response的cookie数组中返回给客户端
+    public void addCookie(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+        Map<String,String[]> pramMap = request.getParameterMap();
+        User userSession = null;
+        if (pramMap != null) {
+            userSession = new User();
+            if (pramMap.containsKey("UserName") && pramMap.containsKey("Password")) {
+                userSession.setUserName(pramMap.get("UserName")[0]);
+                userSession.setPassword(pramMap.get("Password")[0]);
+
+                String strJson = JSON.toJSONString(userSession);
+                Cookie cookie = new Cookie("userinfo", URLEncoder.encode(strJson, "utf-8"));//创建新cookie
+                cookie.setMaxAge(5 * 60);// 设置存在时间为5分钟
+                cookie.setPath("/");//设置作用域
+                response.addCookie(cookie);//将cookie添加到response的cookie数组中返回给客户端
+            }
+        }
+
     }
 
     //修改cookie，可以根据某个cookie的name修改它（不只是name要与被修改cookie一致，path、domain必须也要与被修改cookie一致）
@@ -119,5 +137,31 @@ public class LoginInterceptor implements HandlerInterceptor {
                 }
             }
         }
+    }
+
+
+    /**
+     * 获取IP地址的方法
+     * @param request   传一个request对象下来
+     * @return
+     */
+    public static String getIpAddress(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
     }
 }

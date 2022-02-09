@@ -18,9 +18,9 @@
         <package name="com.fruitsalesplatform.mapper"/>
     </typeAliases>
 
-    <mappers>
-        <mapper resource="mapper/UserDao.xml"/>
-        <mapper resource="mapper/UserNewDaoMapper.xml"/>
-        <mapper resource="mapper/RetailerMapper.xml"/>
-    </mappers>
+<!--    <mappers>-->
+<!--        <mapper resource="mapper/UserDao.xml"/>-->
+<!--        <mapper resource="mapper/UserNewDaoMapper.xml"/>-->
+<!--        <mapper resource="mapper/RetailerMapper.xml"/>-->
+<!--    </mappers>-->
 </configuration>
