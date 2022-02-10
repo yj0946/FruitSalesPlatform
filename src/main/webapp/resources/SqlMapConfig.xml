@@ -22,5 +22,6 @@
 <!--        <mapper resource="mapper/UserDao.xml"/>-->
 <!--        <mapper resource="mapper/UserNewDaoMapper.xml"/>-->
 <!--        <mapper resource="mapper/RetailerMapper.xml"/>-->
+<!--        <mapper class="com.fruitsalesplatform.mapper.LogtableMapper"/>-->
 <!--    </mappers>-->
 </configuration>
