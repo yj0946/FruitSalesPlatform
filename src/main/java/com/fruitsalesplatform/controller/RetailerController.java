@@ -3,14 +3,13 @@ package com.fruitsalesplatform.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.fruitsalesplatform.entity.Retailer;
 import com.fruitsalesplatform.entity.RetailerId;
+import com.fruitsalesplatform.example.RetailerExample;
+import com.fruitsalesplatform.service.GenRetailerService;
 import com.fruitsalesplatform.service.RetailerService;
 import com.fruitsalesplatform.viewResult.AppResult;
 import com.fruitsalesplatform.viewResult.AppResultBuilder;
 import com.fruitsalesplatform.viewResult.ResultCode;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +28,27 @@ public class RetailerController<T> extends BaseController{
     public String strMsg;
     @Resource
     RetailerService retailerService;
+
+    @Resource
+    GenRetailerService genRetailerService;
+
+    @ApiOperation(value = "(Gen)POST方法查询零售商Id", notes = "(Gen)POST方法编辑零售商Id")
+    @RequestMapping(value = "/retailer/gen/queryRetailerById", method = {RequestMethod.POST})
+    public @ResponseBody AppResult<Retailer> genQueryRetailerById(@ApiParam(value = "零售商Id")@RequestBody String strJson) {
+        String id = JSONObject.parseObject(strJson).getString("id");
+        //@ResponseBody将retailer转换成JSON格式输出。
+        RetailerExample retailerExample = new RetailerExample();
+        RetailerExample.Criteria criteria = retailerExample.createCriteria();
+        criteria.andRetaileridEqualTo(id);
+
+        long nCount = genRetailerService.countByExample(retailerExample);
+        if (nCount != 0) {
+            return AppResultBuilder.successNoData(ResultCode.SUCCESS);
+        } else {
+            return AppResultBuilder.failure(ResultCode.FAILURE);
+        }
+
+    }
 
     @ApiOperation(value = "POST方法查询零售商Id", notes = "POST方法编辑零售商Id")
     @RequestMapping(value = "/retailer/deleteByRetailerById", method = {RequestMethod.POST})

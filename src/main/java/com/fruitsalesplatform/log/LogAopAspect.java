@@ -42,6 +42,7 @@ public class LogAopAspect {
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
 
         // 获取方法
+        // 先获取父类方法
         Method method = methodSignature.getMethod();
         Method realMethod = pjp.getTarget().getClass().getDeclaredMethod(pjp.getSignature().getName(), method.getParameterTypes());
 
@@ -58,7 +59,7 @@ public class LogAopAspect {
         // 创建一个日志对象(准备记录日志)
         Logtable logtable = new Logtable();
         logtable.setOperatetype(operateType);
-
+        logtable.setRemark(methodSignature.getName());
 
 
         Object result = null;
@@ -83,7 +84,7 @@ public class LogAopAspect {
             logtable.setOperateresult("正常");// 设置操作结果
         } catch (Exception e) {
             // 3.相当于异常通知部分
-            logtable.setOperateresult("失败");// 设置操作结果
+            logtable.setOperateresult(e.getMessage());// 设置操作结果
         } finally {
             // 4.相当于最终通知
             logtable.setOperatedate(new Date());// 设置操作日期

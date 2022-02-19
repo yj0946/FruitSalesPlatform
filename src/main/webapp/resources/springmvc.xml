@@ -51,8 +51,10 @@
              <property name="suffix" value=""/>
        </bean>
 
-        <!--3.注解驱动-->
-       <mvc:annotation-driven/>
+    <!--3.注解驱动-->
+    <mvc:annotation-driven/>
+
+
 
         <!--4.拦截器配置-->
         <mvc:interceptors>
